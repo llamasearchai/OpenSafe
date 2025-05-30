@@ -1,101 +1,182 @@
 {
-  "name": "@openai-safe/core",
+  "name": "@opensafe/core",
   "version": "1.0.0",
-  "description": "Production-grade AI Safety Research and Deployment Platform",
+  "description": "Production-grade AI Safety Research and Deployment Platform with TypeScript and Rust integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run build:rust",
     "build:rust": "cd native && cargo build --release",
+    "build:prod": "NODE_ENV=production npm run build",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn src/server.ts",
-    "test": "jest --coverage",
-    "test:unit": "jest --testPathPattern=unit",
-    "test:integration": "jest --config jest.integration.config.js",
-    "test:e2e": "jest --config jest.e2e.config.js",
-    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.{ts,tsx}'",
-    "test:watch": "jest --watch",
-    "test:safety": "jest --testPathPattern=safety --coverage",
-    "test:all": "npm run test && npm run test:integration && npm run test:e2e",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\"",
-    "docker:build": "docker build -t openai-safe .",
-    "docker:run": "docker run -p 8080:8080 openai-safe",
-    "db:migrate": "node -e \"require('./dist/models/database').initializeDatabase()\"",
-    "db:migrate:test": "NODE_ENV=test node -e \"require('./dist/models/database').initializeDatabase()\"",
-    "db:seed": "node dist/scripts/seed.js",
-    "db:seed:test": "NODE_ENV=test node dist/scripts/seed.js",
-    "benchmark": "node scripts/benchmark.sh",
-    "security": "npm audit --audit-level=high",
-    "docs": "typedoc src --out docs/api",
-    "clean": "rm -rf dist coverage"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "test": "jest --coverage --detectOpenHandles",
+    "test:watch": "jest --watch --detectOpenHandles",
+    "test:unit": "jest tests/unit --coverage",
+    "test:integration": "jest tests/integration --runInBand",
+    "test:e2e": "jest --config jest.e2e.config.js --runInBand",
+    "test:load": "node tests/load/production-load.js",
+    "test:safety": "jest tests/unit/safety.test.ts",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "lint": "eslint src --ext .ts --fix",
+    "lint:check": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "docker:build": "docker build -t opensafe/core .",
+    "docker:run": "docker run -p 8080:8080 opensafe/core",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:prod": "docker-compose up -d",
+    "migrate": "node scripts/migrate.js",
+    "migrate:dev": "NODE_ENV=development npm run migrate",
+    "migrate:prod": "NODE_ENV=production npm run migrate",
+    "seed": "node scripts/seed.js",
+    "db:reset": "npm run migrate && npm run seed",
+    "benchmark": "node scripts/benchmark.js",
+    "profile": "node --prof scripts/profile.js",
+    "profile:memory": "node --inspect scripts/memory-benchmark.js",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:check": "npm run security:audit && snyk test",
+    "docs:build": "typedoc --out docs/api src",
+    "docs:serve": "http-server docs/api -p 3001",
+    "clean": "rimraf dist coverage .nyc_output",
+    "precommit": "npm run lint && npm run type-check && npm run test:unit",
+    "prepush": "npm run test:all && npm run security:audit",
+    "release:patch": "npm version patch && git push --tags",
+    "release:minor": "npm version minor && git push --tags",
+    "release:major": "npm version major && git push --tags",
+    "health": "curl -f http://localhost:8080/health || exit 1",
+    "logs": "docker-compose logs -f",
+    "cli": "node dist/cli/index.js"
   },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "chalk": "^4.1.2",
-    "commander": "^11.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
-    "helmet": "^7.1.0",
-    "ioredis": "^5.3.2",
-    "jsonwebtoken": "^9.0.2",
-    "openai": "^4.28.0",
-    "pg": "^8.11.3",
-    "prom-client": "^15.1.0",
-    "uuid": "^9.0.1",
-    "winston": "^3.11.0",
-    "ws": "^8.16.0",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/cors": "^2.8.18",
-    "@types/express": "^4.17.21",
-    "@types/inquirer": "^9.0.8",
-    "@types/jest": "^29.5.12",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^20.11.30",
-    "@types/pg": "^8.10.9",
-    "@types/supertest": "^6.0.2",
-    "@types/uuid": "^9.0.7",
-    "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.56.0",
-    "jest": "^29.7.0",
-    "nodemon": "^3.0.3",
-    "prettier": "^3.2.5",
-    "supertest": "^6.3.4",
-    "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typedoc": "^0.25.7",
-    "typescript": "^5.3.3"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+  "keywords": [
+    "ai-safety",
+    "constitutional-ai", 
+    "openai",
+    "content-moderation",
+    "safety-analysis",
+    "typescript",
+    "rust",
+    "production-ready",
+    "enterprise",
+    "monitoring",
+    "research",
+    "bias-detection",
+    "harmful-content",
+    "privacy-protection"
+  ],
+  "author": {
+    "name": "OpenSafe Team",
+    "email": "team@opensafe.ai",
+    "url": "https://opensafe.ai"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openai-safe/platform.git"
+    "url": "https://github.com/opensafe/core.git"
   },
-  "keywords": [
-    "ai",
-    "safety",
-    "openai",
-    "constitutional-ai",
-    "interpretability",
-    "research",
-    "platform"
-  ],
-  "author": "OpenAI Safe Team",
   "bugs": {
-    "url": "https://github.com/openai-safe/platform/issues"
+    "url": "https://github.com/opensafe/core/issues",
+    "email": "bugs@opensafe.ai"
   },
-  "homepage": "https://github.com/openai-safe/platform#readme"
+  "homepage": "https://github.com/opensafe/core#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "files": [
+    "dist",
+    "native/target/release",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "openai": "^4.28.0",
+    "ws": "^8.16.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.22.4",
+    "winston": "^3.11.0",
+    "uuid": "^9.0.1",
+    "ffi-napi": "^4.0.3",
+    "ref-napi": "^3.0.3",
+    "ioredis": "^5.3.2",
+    "prom-client": "^15.1.0",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.1.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcrypt": "^5.1.1",
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "sharp": "^0.33.2",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.3",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/ws": "^8.5.10",
+    "@types/node": "^20.11.30",
+    "@types/ffi-napi": "^4.0.10",
+    "@types/jest": "^29.5.12",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/multer": "^1.4.11",
+    "@types/pg": "^8.10.9",
+    "typescript": "^5.3.3",
+    "ts-node-dev": "^2.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "supertest": "^6.3.4",
+    "@types/supertest": "^6.0.2",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "prettier": "^3.2.5",
+    "typedoc": "^0.25.7",
+    "rimraf": "^5.0.5",
+    "http-server": "^14.1.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "optionalDependencies": {
+    "snyk": "^1.1274.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run type-check",
+      "pre-push": "npm run test:unit"
+    }
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/server.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  },
+  "config": {
+    "rust_target": "release"
+  }
 }
