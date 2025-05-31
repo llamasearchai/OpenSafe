@@ -8,7 +8,6 @@ import { policyService } from '../../src/services/policy.service';
 let adminUserId: string;
 let adminToken: string;
 let researcherToken: string;
-let researcherUserId: string;
 
 const testPolicyPayload = {
     name: `Integration Test Policy ${Date.now()}`,
@@ -34,8 +33,7 @@ beforeAll(async () => {
         const adminLogin = await userService.loginUser({ email: 'policy-admin@example.com', password: 'Password123!' });
         adminToken = adminLogin.token;
 
-        const researcher = await userService.createUser({ email: 'policy-researcher@example.com', password: 'Password123!', role: UserRole.RESEARCHER });
-        researcherUserId = researcher.id;
+        await userService.createUser({ email: 'policy-researcher@example.com', password: 'Password123!', role: UserRole.RESEARCHER });
         const researcherLogin = await userService.loginUser({ email: 'policy-researcher@example.com', password: 'Password123!' });
         researcherToken = researcherLogin.token;
 
@@ -45,7 +43,7 @@ beforeAll(async () => {
             const adminLogin = await userService.loginUser({ email: 'policy-admin@example.com', password: 'Password123!' });
             adminToken = adminLogin.token; adminUserId = adminLogin.user.id;
             const researcherLogin = await userService.loginUser({ email: 'policy-researcher@example.com', password: 'Password123!' });
-            researcherToken = researcherLogin.token; researcherUserId = researcherLogin.user.id;
+            researcherToken = researcherLogin.token;
         } catch(loginError) {
             console.error("Failed to setup users for policy integration tests:", loginError);
             throw loginError;

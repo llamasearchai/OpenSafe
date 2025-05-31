@@ -1,221 +1,197 @@
 # OpenSafe
 
-A comprehensive production-ready AI security and validation platform designed to provide robust safety mechanisms, content validation, and monitoring for AI systems and large language model interactions.
+A robust, production-ready AI and API safety/security platform built with TypeScript and Rust.
 
 ## Features
 
-### Core Security Systems
-- **Constitutional AI**: Principle-based critique and revision system
-- **Safety Analysis**: Multi-layered content validation with 95%+ accuracy
-- **Rust Bridge**: High-performance safety analysis with native integration
-- **Real-time Monitoring**: Live safety violation detection and alerting
-
-### Platform Capabilities
-- **User Management**: Complete authentication and authorization system
-- **Research Experiments**: Automated AI safety experiment framework
-- **Policy Management**: Dynamic safety rule configuration
-- **WebSocket Communication**: Real-time updates and monitoring
-- **CLI Tools**: Command-line interface for safety analysis and benchmarking
-
-### Enterprise Ready
-- **Production Deployment**: Docker containerization with orchestration
-- **Monitoring & Metrics**: Comprehensive observability with Prometheus
-- **Audit Logging**: Complete activity tracking and compliance
-- **Database Integration**: PostgreSQL with migration support
-
-## Architecture
-
-```
-OpenSafe
-├── Core Security Engine (TypeScript + Rust)
-├── API Layer (Express.js with authentication)
-├── Real-time Communication (WebSocket)
-├── Database Layer (PostgreSQL)
-├── Monitoring (Prometheus + Custom metrics)
-└── CLI Tools (Cross-platform)
-```
+- **AI Safety Analysis**: Advanced content moderation and safety analysis
+- **Constitutional AI**: Implement constitutional AI principles for ethical AI behavior
+- **Policy Management**: Create and manage custom safety policies
+- **Real-time Monitoring**: WebSocket-based real-time safety monitoring
+- **OpenAI Integration**: Seamless integration with OpenAI APIs
+- **User Management**: Complete user authentication and authorization
+- **Research Tools**: Advanced research and analysis capabilities
+- **Production Ready**: Docker containerization, monitoring, and logging
 
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
-- TypeScript 5.3+
-- Rust 1.70+ (for native safety analysis)
-- PostgreSQL 15+
-- Redis 7+
+- Docker and Docker Compose
+- PostgreSQL (for production)
+- Redis (for caching)
 
 ### Installation
 
+1. Clone the repository:
 ```bash
-# Clone and install dependencies
-git clone https://github.com/yourusername/OpenSafe.git
-cd OpenSafe
+git clone https://github.com/opensafe/core.git
+cd opensafe
+```
+
+2. Install dependencies:
+```bash
 npm install
+```
 
-# Build Rust components
-cd native && cargo build --release && cd ..
-
-# Setup environment
+3. Set up environment variables:
+```bash
 cp .env.example .env
 # Edit .env with your configuration
+```
 
-# Run database migrations
-npm run migrate
+4. Build the project:
+```bash
+npm run build
+```
 
-# Start development server
+5. Run tests:
+```bash
+npm test
+```
+
+### Development
+
+Start the development server:
+```bash
 npm run dev
 ```
 
-### Docker Deployment
+The API will be available at `http://localhost:8080`
 
+### Production Deployment
+
+Using Docker Compose:
 ```bash
-# Build and run with Docker Compose
 docker-compose up -d
-
-# Run production build
-npm run docker:build
-npm run docker:run
 ```
 
-## TypeScript Quality
+## API Endpoints
 
-This platform maintains **100% TypeScript compilation success** with:
-- Zero compilation errors (fixed 134+ errors)
-- Strict type checking enabled
-- Complete type coverage for all modules
-- Production-ready type safety
-
-## Safety Features
-
-### Constitutional AI
-```typescript
-const result = await constitutionalAI.applyPrinciples(text, {
-  principles: ['harmlessness', 'helpfulness', 'honesty'],
-  max_revisions: 3
-});
-```
+### Authentication
+- `POST /api/v1/auth/register` - Register a new user
+- `POST /api/v1/auth/login` - Login user
+- `POST /api/v1/auth/logout` - Logout user
 
 ### Safety Analysis
-```typescript
-const analysis = await safetyAnalyzer.analyze(content, {
-  mode: 'comprehensive',
-  include_interpretability: true
-});
-```
+- `POST /api/v1/safety/analyze` - Analyze content for safety
+- `GET /api/v1/safety/history` - Get analysis history
 
 ### Policy Management
-```typescript
-const policy = await policyService.createPolicy({
-  name: 'Content Safety Policy',
-  rules: [/* safety rules */]
-});
+- `GET /api/v1/policies` - List policies
+- `POST /api/v1/policies` - Create policy
+- `PUT /api/v1/policies/:id` - Update policy
+- `DELETE /api/v1/policies/:id` - Delete policy
+
+### Chat Completions
+- `POST /api/v1/chat/completions` - Safe chat completions
+
+### Research
+- `POST /api/v1/research/analyze` - Research analysis
+- `GET /api/v1/research/reports` - Get research reports
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Server Configuration
+NODE_ENV=production
+PORT=8080
+
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/opensafe
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
+
+# JWT
+JWT_SECRET=your_jwt_secret
+
+# Monitoring
+ENABLE_METRICS=true
+PROMETHEUS_PORT=9090
 ```
+
+## Architecture
+
+OpenSafe is built with a modular architecture:
+
+- **API Layer**: Express.js REST API with TypeScript
+- **Safety Engine**: Rust-based high-performance safety analysis
+- **Database**: PostgreSQL for persistent data
+- **Cache**: Redis for session management and caching
+- **Monitoring**: Prometheus metrics and health checks
+- **WebSocket**: Real-time communication for live monitoring
 
 ## Testing
 
+Run the test suite:
 ```bash
-# Run all tests
-npm test
-
-# Run specific test suites
+# Unit tests
 npm run test:unit
-npm run test:integration
-npm run test:e2e
 
-# Run safety benchmarks
-npm run test:safety
+# Integration tests
+npm run test:integration
+
+# All tests
+npm run test:all
 
 # Load testing
 npm run test:load
 ```
 
-## Performance Metrics
+## Security
 
-- **Safety Analysis**: <50ms average response time
-- **API Throughput**: 1000+ requests/second
-- **Memory Usage**: <500MB baseline
-- **Accuracy**: 95%+ safety detection rate
+OpenSafe implements multiple security layers:
 
-## API Endpoints
+- JWT-based authentication
+- Rate limiting
+- Input validation with Zod schemas
+- SQL injection prevention
+- XSS protection
+- CORS configuration
+- Helmet.js security headers
 
-### Safety Analysis
-```http
-POST /api/v1/safety/analyze
-Content-Type: application/json
+## Monitoring
 
-{
-  "text": "Content to analyze",
-  "mode": "comprehensive"
-}
-```
+Built-in monitoring includes:
 
-### Constitutional AI
-```http
-POST /api/v1/safety/constitutional
-Content-Type: application/json
-
-{
-  "text": "Content to revise",
-  "principles": ["harmlessness", "helpfulness"]
-}
-```
-
-### Chat Completions (Safe)
-```http
-POST /api/v1/chat/completions
-Content-Type: application/json
-
-{
-  "model": "gpt-4",
-  "messages": [...],
-  "safety_mode": "strict"
-}
-```
-
-## Production Deployment
-
-### Environment Setup
-1. Configure environment variables
-2. Setup database and Redis
-3. Build Rust components
-4. Deploy with Docker/Kubernetes
-
-### Monitoring
-- Health checks at `/health`
-- Metrics at `/metrics`
-- Real-time alerts via WebSocket
-
-### Scaling
-- Horizontal scaling supported
-- Load balancer compatible
-- Stateless design
+- Health check endpoints
+- Prometheus metrics
+- Request/response logging
+- Error tracking
+- Performance monitoring
 
 ## Contributing
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Run the test suite
+6. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- OpenAI for API integration
-- Rust community for performance optimization
-- TypeScript team for type safety
-- Open source contributors
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Support
 
-- Documentation: [docs/api/](docs/api/)
-- Issues: [GitHub Issues](https://github.com/yourusername/OpenSafe/issues)
-- Discord: [AI Security Community](https://discord.gg/aisecurity)
-- Email: support@opensafe.ai
+For support and questions:
+- GitHub Issues: [https://github.com/opensafe/core/issues](https://github.com/opensafe/core/issues)
+- Email: team@opensafe.ai
+- Documentation: [https://docs.opensafe.ai](https://docs.opensafe.ai)
 
----
+## Roadmap
 
-**OpenSafe** - Securing AI interactions through comprehensive validation and monitoring. 
+- [ ] Advanced ML model integration
+- [ ] Multi-language support
+- [ ] Enhanced policy templates
+- [ ] Advanced analytics dashboard
+- [ ] Enterprise SSO integration
+- [ ] Advanced threat detection 
