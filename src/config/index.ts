@@ -83,7 +83,7 @@ const ConfigSchema = z.object({
   
   // Database configuration
   database: z.object({
-    url: z.string().default('postgresql://postgres:password@localhost:5432/openvault'),
+    url: z.string().default('postgresql://postgres:password@localhost:5432/opensafe'),
     ssl: z.boolean().default(false),
     maxConnections: z.number().default(10),
   }),
@@ -155,7 +155,7 @@ const rawConfig = {
   
   // Database
   database: {
-    url: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/openvault',
+    url: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/opensafe',
     ssl: process.env.DATABASE_SSL === 'true',
     maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '10'),
   },

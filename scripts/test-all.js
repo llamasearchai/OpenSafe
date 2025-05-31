@@ -4,11 +4,11 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('🚀 OpenVault AI Security Platform - Comprehensive Test Suite');
+console.log('OpenSafe AI Security Platform - Comprehensive Test Suite');
 console.log('=' .repeat(60));
 
 const runCommand = (command, description) => {
-  console.log(`\n📋 ${description}`);
+  console.log(`\n[TEST] ${description}`);
   console.log('-'.repeat(40));
   try {
     const output = execSync(command, { 
@@ -16,23 +16,23 @@ const runCommand = (command, description) => {
       stdio: 'inherit',
       cwd: process.cwd()
     });
-    console.log(`✅ ${description} - PASSED`);
+    console.log(`[PASS] ${description}`);
     return true;
   } catch (error) {
-    console.error(`❌ ${description} - FAILED`);
+    console.error(`[FAIL] ${description}`);
     console.error(`Exit code: ${error.status}`);
     return false;
   }
 };
 
 const checkFile = (filePath, description) => {
-  console.log(`\n📁 ${description}`);
+  console.log(`\n[CHECK] ${description}`);
   console.log('-'.repeat(40));
   if (fs.existsSync(filePath)) {
-    console.log(`✅ ${description} - EXISTS`);
+    console.log(`[PASS] ${description} - EXISTS`);
     return true;
   } else {
-    console.log(`❌ ${description} - MISSING`);
+    console.log(`[FAIL] ${description} - MISSING`);
     return false;
   }
 };
@@ -59,14 +59,14 @@ if (runCommand('npm run type-check', 'TypeScript compilation check')) passedTest
 
 // Run linting (but don't fail on warnings)
 totalTests++;
-console.log('\n📋 ESLint code quality check');
+console.log('\n[TEST] ESLint code quality check');
 console.log('-'.repeat(40));
 try {
   execSync('npm run lint', { encoding: 'utf8', stdio: 'inherit' });
-  console.log('✅ ESLint - PASSED');
+  console.log('[PASS] ESLint - No Errors');
   passedTests++;
 } catch (error) {
-  console.log('⚠️  ESLint - HAS WARNINGS (continuing...)');
+  console.log('[WARN] ESLint - Has Warnings (continuing...)');
   passedTests++; // Don't fail on linting warnings for now
 }
 
@@ -92,7 +92,7 @@ if (runCommand('npm audit --audit-level=moderate', 'Security audit')) passedTest
 
 // Generate final report
 console.log('\n' + '='.repeat(60));
-console.log('📊 FINAL TEST REPORT');
+console.log('FINAL TEST REPORT');
 console.log('='.repeat(60));
 console.log(`Total Tests: ${totalTests}`);
 console.log(`Passed: ${passedTests}`);
@@ -100,9 +100,9 @@ console.log(`Failed: ${totalTests - passedTests}`);
 console.log(`Success Rate: ${Math.round((passedTests / totalTests) * 100)}%`);
 
 if (passedTests === totalTests) {
-  console.log('\n🎉 ALL TESTS PASSED! OpenVault is ready for production.');
+  console.log('\n[SUCCESS] ALL TESTS PASSED! OpenSafe is ready for production.');
   process.exit(0);
 } else {
-  console.log('\n⚠️  Some tests failed. Please review the output above.');
+  console.log('\n[ERROR] Some tests failed. Please review the output above.');
   process.exit(1);
 } 

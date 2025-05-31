@@ -73,7 +73,7 @@ node scripts/test-all.js # Complete validation pipeline (100% success) [COMPLETE
 
 ### Docker Deployment (Production Ready)
 ```bash
-docker build -t openvault/core . [COMPLETE]
+docker build -t opensafe/core . [COMPLETE]
 docker-compose up -d [COMPLETE]
 ./scripts/docker-setup.sh  # Automated Docker setup [COMPLETE]
 ```

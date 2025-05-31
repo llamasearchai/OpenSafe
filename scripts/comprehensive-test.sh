@@ -2,7 +2,7 @@
 
 set -e
 
-echo "OpenVault - Comprehensive Production Readiness Test Suite"
+echo "OpenSafe - Comprehensive Production Readiness Test Suite"
 echo "=============================================================="
 
 # Colors for output

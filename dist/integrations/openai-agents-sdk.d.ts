@@ -1,5 +1,5 @@
 /**
- * OpenVault AI Security Platform - OpenAI Agents SDK Integration
+ * OpenSafe AI Security Platform - OpenAI Agents SDK Integration
  *
  * This module provides integration with OpenAI's Agents SDK while maintaining
  * comprehensive safety analysis and constitutional AI principles.

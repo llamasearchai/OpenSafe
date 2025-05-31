@@ -1,5 +1,5 @@
 /**
- * OpenVault AI Security Platform - OpenAI Agents SDK Integration
+ * OpenSafe AI Security Platform - OpenAI Agents SDK Integration
  * 
  * This module provides integration with OpenAI's Agents SDK while maintaining
  * comprehensive safety analysis and constitutional AI principles.
@@ -146,7 +146,7 @@ export class SafeOpenAIAgentsSDK {
         metadata: {
           ...config.metadata,
           safety_mode: config.safety_mode || this.defaultSafetyMode,
-          created_by_openvault: 'true'
+          created_by_opensafe: 'true'
         }
       });
 
@@ -196,7 +196,7 @@ export class SafeOpenAIAgentsSDK {
     const thread = await this.openai.beta.threads.create({
       metadata: {
         ...metadata,
-        created_by_openvault: 'true',
+        created_by_opensafe: 'true',
         safety_monitoring: 'enabled'
       }
     });
@@ -376,7 +376,7 @@ export class SafeOpenAIAgentsSDK {
           ...options.metadata,
           safety_mode: safetyMode,
           input_safety_score: inputSafetyScore.toString(),
-          created_by_openvault: 'true'
+          created_by_opensafe: 'true'
         }
       });
 
@@ -522,7 +522,7 @@ export class SafeOpenAIAgentsSDK {
     const assistants = await this.openai.beta.assistants.list(options);
     
     const safeAssistants: SafeAgentResponse[] = assistants.data
-      .filter(assistant => assistant.metadata?.created_by_openvault === 'true')
+      .filter(assistant => assistant.metadata?.created_by_opensafe === 'true')
       .map(assistant => ({
         ...assistant,
         file_ids: [],

@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Deploying OpenVault AI Security Platform..."
+echo "Deploying OpenSafe AI Security Platform..."
 
 # Load environment
 if [ -f .env ]; then

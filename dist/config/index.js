@@ -78,7 +78,7 @@ const ConfigSchema = zod_1.z.object({
     }).default({}),
     // Database configuration
     database: zod_1.z.object({
-        url: zod_1.z.string().default('postgresql://postgres:password@localhost:5432/openvault'),
+        url: zod_1.z.string().default('postgresql://postgres:password@localhost:5432/opensafe'),
         ssl: zod_1.z.boolean().default(false),
         maxConnections: zod_1.z.number().default(10),
     }),
@@ -140,7 +140,7 @@ const rawConfig = {
     provider: process.env.PROVIDER || 'openai',
     // Database
     database: {
-        url: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/openvault',
+        url: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/opensafe',
         ssl: process.env.DATABASE_SSL === 'true',
         maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '10'),
     },

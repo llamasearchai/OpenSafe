@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the OpenVault AI Security Platform will be documented in this file.
+All notable changes to the OpenSafe AI Security Platform will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -169,9 +169,9 @@ Migration guides will be provided for major version upgrades with:
 
 For questions about releases or migrations:
 - [Documentation](docs/api/)
-- [GitHub Discussions](https://github.com/yourusername/OpenVault/discussions)
-- [Issue Tracker](https://github.com/yourusername/OpenVault/issues)
-- [Email Support](mailto:support@openvault.ai)
+- [GitHub Discussions](https://github.com/yourusername/OpenSafe/discussions)
+- [Issue Tracker](https://github.com/yourusername/OpenSafe/issues)
+- [Email Support](mailto:support@opensafe.ai)
 
 ---
 

@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Building OpenVault AI Security Platform..."
+echo "Building OpenSafe AI Security Platform..."
 
 # Install Node dependencies
 echo "Installing Node.js dependencies..."

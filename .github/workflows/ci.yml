@@ -306,7 +306,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: success
-          text: "OpenVault CI/CD pipeline completed successfully!"
+          text: "OpenSafe CI/CD pipeline completed successfully!"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -315,6 +315,6 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: failure
-          text: "OpenVault CI/CD pipeline failed. Please check the logs."
+          text: "OpenSafe CI/CD pipeline failed. Please check the logs."
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-OpenVault AI Security Platform - FastAPI Integration Bridge
+OpenSafe AI Security Platform - FastAPI Integration Bridge
 
-This module provides a FastAPI integration for the OpenVault AI Security Platform,
+This module provides a FastAPI integration for the OpenSafe AI Security Platform,
 allowing Python applications to leverage the safety analysis and constitutional AI features.
 """
 
@@ -25,13 +25,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configuration
-OPENVAULT_BASE_URL = os.getenv("OPENVAULT_BASE_URL", "http://localhost:8080")
-OPENVAULT_API_KEY = os.getenv("OPENVAULT_API_KEY", "")
+OPENSAFE_BASE_URL = os.getenv("OPENSAFE_BASE_URL", "http://localhost:8080")
+OPENSAFE_API_KEY = os.getenv("OPENSAFE_API_KEY", "")
 
 # FastAPI app
 app = FastAPI(
-    title="OpenVault FastAPI Bridge",
-    description="FastAPI integration for OpenVault AI Security Platform",
+    title="OpenSafe FastAPI Bridge",
+    description="FastAPI integration for OpenSafe AI Security Platform",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -86,17 +86,17 @@ class ChatCompletionRequest(BaseModel):
 class HealthResponse(BaseModel):
     status: str = Field(..., description="Health status")
     timestamp: datetime = Field(default_factory=datetime.now, description="Current timestamp")
-    openvault_status: str = Field(..., description="OpenVault platform status")
+    opensafe_status: str = Field(..., description="OpenSafe platform status")
 
-# OpenVault client
-class OpenVaultClient:
+# OpenSafe client
+class OpenSafeClient:
     def __init__(self, base_url: str, api_key: str):
         self.base_url = base_url.rstrip('/')
         self.api_key = api_key
         self.client = httpx.AsyncClient(timeout=30.0)
         
     async def _make_request(self, method: str, endpoint: str, data: Optional[Dict] = None, headers: Optional[Dict] = None) -> Dict:
-        """Make authenticated request to OpenVault API"""
+        """Make authenticated request to OpenSafe API"""
         url = f"{self.base_url}{endpoint}"
         request_headers = {
             "Content-Type": "application/json",
@@ -141,11 +141,11 @@ class OpenVaultClient:
         return result
     
     async def health_check(self) -> Dict:
-        """Check OpenVault platform health"""
+        """Check OpenSafe platform health"""
         return await self._make_request("GET", "/health")
 
 # Initialize client
-openvault_client = OpenVaultClient(OPENVAULT_BASE_URL, OPENVAULT_API_KEY)
+opensafe_client = OpenSafeClient(OPENSAFE_BASE_URL, OPENSAFE_API_KEY)
 
 # Dependency for authentication
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(security)):
@@ -159,7 +159,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(
 async def root():
     """Root endpoint"""
     return {
-        "message": "OpenVault FastAPI Bridge",
+        "message": "OpenSafe FastAPI Bridge",
         "version": "1.0.0",
         "docs": "/docs",
         "health": "/health"
@@ -169,15 +169,15 @@ async def root():
 async def health_check():
     """Health check endpoint"""
     try:
-        openvault_health = await openvault_client.health_check()
-        openvault_status = openvault_health.get("status", "unknown")
+        opensafe_health = await opensafe_client.health_check()
+        opensafe_status = opensafe_health.get("status", "unknown")
     except Exception as e:
-        logger.warning(f"OpenVault health check failed: {e}")
-        openvault_status = "unavailable"
+        logger.warning(f"OpenSafe health check failed: {e}")
+        opensafe_status = "unavailable"
     
     return HealthResponse(
         status="healthy",
-        openvault_status=openvault_status
+        opensafe_status=opensafe_status
     )
 
 @app.post("/safety/analyze", response_model=SafetyAnalysisResponse)
@@ -187,7 +187,7 @@ async def analyze_safety(
 ):
     """Analyze content for safety violations"""
     logger.info(f"Safety analysis requested by user {current_user['user_id']}")
-    return await openvault_client.analyze_safety(request)
+    return await opensafe_client.analyze_safety(request)
 
 @app.post("/safety/constitutional", response_model=ConstitutionalAIResponse)
 async def apply_constitutional_ai(
@@ -196,7 +196,7 @@ async def apply_constitutional_ai(
 ):
     """Apply constitutional AI principles to content"""
     logger.info(f"Constitutional AI requested by user {current_user['user_id']}")
-    return await openvault_client.apply_constitutional_ai(request)
+    return await opensafe_client.apply_constitutional_ai(request)
 
 @app.post("/chat/completions")
 async def chat_completions(
@@ -205,12 +205,12 @@ async def chat_completions(
 ):
     """Get safe chat completion"""
     logger.info(f"Chat completion requested by user {current_user['user_id']}")
-    return await openvault_client.chat_completion(request)
+    return await opensafe_client.chat_completion(request)
 
 @app.get("/policies")
 async def list_policies(current_user: Dict = Depends(get_current_user)):
     """List available safety policies"""
-    return await openvault_client._make_request("GET", "/api/v1/policies")
+    return await opensafe_client._make_request("GET", "/api/v1/policies")
 
 # Batch processing endpoint
 @app.post("/safety/analyze/batch")
@@ -221,7 +221,7 @@ async def analyze_safety_batch(
     """Batch safety analysis"""
     logger.info(f"Batch safety analysis requested by user {current_user['user_id']} for {len(requests)} items")
     
-    tasks = [openvault_client.analyze_safety(req) for req in requests]
+    tasks = [opensafe_client.analyze_safety(req) for req in requests]
     results = await asyncio.gather(*tasks, return_exceptions=True)
     
     # Process results and handle exceptions
@@ -260,7 +260,7 @@ async def websocket_safety_monitor(websocket):
             if message.get("type") == "analyze":
                 # Perform safety analysis
                 request = SafetyAnalysisRequest(**message.get("data", {}))
-                result = await openvault_client.analyze_safety(request)
+                result = await opensafe_client.analyze_safety(request)
                 
                 # Send result back
                 await websocket.send_text(json.dumps({
@@ -278,21 +278,21 @@ async def websocket_safety_monitor(websocket):
 @app.on_event("startup")
 async def startup_event():
     """Application startup"""
-    logger.info("OpenVault FastAPI Bridge starting up...")
+    logger.info("OpenSafe FastAPI Bridge starting up...")
     
-    # Test connection to OpenVault
+    # Test connection to OpenSafe
     try:
-        health = await openvault_client.health_check()
-        logger.info(f"Connected to OpenVault: {health.get('status', 'unknown')}")
+        health = await opensafe_client.health_check()
+        logger.info(f"Connected to OpenSafe: {health.get('status', 'unknown')}")
     except Exception as e:
-        logger.warning(f"Could not connect to OpenVault: {e}")
+        logger.warning(f"Could not connect to OpenSafe: {e}")
 
 # Shutdown event
 @app.on_event("shutdown")
 async def shutdown_event():
     """Application shutdown"""
-    logger.info("OpenVault FastAPI Bridge shutting down...")
-    await openvault_client.client.aclose()
+    logger.info("OpenSafe FastAPI Bridge shutting down...")
+    await opensafe_client.client.aclose()
 
 if __name__ == "__main__":
     # Run the FastAPI application

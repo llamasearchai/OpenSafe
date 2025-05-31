@@ -46,7 +46,7 @@ app.use((err, _req, res, _next) => {
 });
 // Start server
 server.listen(config_1.config.port, () => {
-    console.log(`OpenVault AI Security Platform running on port ${config_1.config.port}`);
+    console.log(`OpenSafe AI Security Platform running on port ${config_1.config.port}`);
     console.log(`Environment: ${config_1.config.env}`);
 });
 // Graceful shutdown

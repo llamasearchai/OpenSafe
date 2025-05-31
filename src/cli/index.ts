@@ -12,7 +12,7 @@ const logger = {
 
 program
   .name('openai-safe')
-  .description('OpenVault CLI tool for AI security and validation operations')
+  .description('OpenSafe CLI tool for AI security and validation operations')
   .version('1.0.0');
 
 program

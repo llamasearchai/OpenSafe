@@ -46,7 +46,7 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 
 // Start server
 server.listen(config.port, () => {
-  console.log(`OpenVault AI Security Platform running on port ${config.port}`);
+  console.log(`OpenSafe AI Security Platform running on port ${config.port}`);
   console.log(`Environment: ${config.env}`);
 });
 

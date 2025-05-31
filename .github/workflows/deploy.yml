@@ -271,7 +271,7 @@ jobs:
         with:
           status: success
           text: |
-            OpenVault Production Deployment Successful!
+            OpenSafe Production Deployment Successful!
             Version: ${{ github.event.release.tag_name }}
             Environment: Production
             Deploy Time: $(date)
@@ -284,7 +284,7 @@ jobs:
         with:
           status: failure
           text: |
-            OpenVault Production Deployment Failed!
+            OpenSafe Production Deployment Failed!
             Version: ${{ github.event.release.tag_name }}
             Environment: Production
             Rollback: Initiated

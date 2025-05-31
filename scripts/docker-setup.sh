@@ -2,7 +2,7 @@
 
 set -e
 
-echo "🐳 OpenVault AI Security Platform - Docker Setup"
+echo "OpenSafe AI Security Platform - Docker Setup"
 echo "================================================"
 
 # Colors for output
@@ -35,23 +35,23 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-log_info "Building OpenVault Docker image..."
-docker build -t openvault/core:latest .
+log_info "Building OpenSafe Docker image..."
+docker build -t opensafe/core:latest .
 
 if [ $? -eq 0 ]; then
-    log_info "✅ Docker image built successfully"
+    log_info "[SUCCESS] Docker image built successfully"
 else
-    log_error "❌ Docker image build failed"
+    log_error "[ERROR] Docker image build failed"
     exit 1
 fi
 
 log_info "Testing Docker image..."
-docker run --rm openvault/core:latest node --version
+docker run --rm opensafe/core:latest node --version
 
 if [ $? -eq 0 ]; then
-    log_info "✅ Docker image test passed"
+    log_info "[SUCCESS] Docker image test passed"
 else
-    log_error "❌ Docker image test failed"
+    log_error "[ERROR] Docker image test failed"
     exit 1
 fi
 
@@ -59,9 +59,9 @@ log_info "Setting up development environment with Docker Compose..."
 docker-compose -f docker-compose.yml config
 
 if [ $? -eq 0 ]; then
-    log_info "✅ Docker Compose configuration is valid"
+    log_info "[SUCCESS] Docker Compose configuration is valid"
 else
-    log_error "❌ Docker Compose configuration is invalid"
+    log_error "[ERROR] Docker Compose configuration is invalid"
     exit 1
 fi
 
@@ -69,18 +69,18 @@ log_info "Starting services in detached mode..."
 docker-compose up -d
 
 if [ $? -eq 0 ]; then
-    log_info "✅ Services started successfully"
-    log_info "🌐 OpenVault is running at http://localhost:8080"
-    log_info "📊 Health check: http://localhost:8080/health"
-    log_info "📈 Metrics: http://localhost:8080/metrics"
+    log_info "[SUCCESS] Services started successfully"
+    log_info "[INFO] OpenSafe is running at http://localhost:8080"
+    log_info "[INFO] Health check: http://localhost:8080/health"
+    log_info "[INFO] Metrics: http://localhost:8080/metrics"
     
     echo ""
     echo "To view logs: docker-compose logs -f"
     echo "To stop services: docker-compose down"
     echo "To rebuild: docker-compose up --build"
 else
-    log_error "❌ Failed to start services"
+    log_error "[ERROR] Failed to start services"
     exit 1
 fi
 
-log_info "🎉 Docker setup completed successfully!" 
+log_info "[SUCCESS] Docker setup completed successfully!" 
