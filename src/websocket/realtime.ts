@@ -28,7 +28,7 @@ export function setupWebSocket(wss: WebSocketServer) {
     }
 
     try {
-      const decoded = jwt.verify(token, config.jwtSecret) as any;
+      const decoded = jwt.verify(token, config.security.jwtSecret) as any;
       const clientId = `${decoded.id}_${Date.now()}`;
       
       const client: WSClient = {

@@ -43,7 +43,7 @@ export async function authenticate(req: AuthenticatedRequest, _res: Response, ne
     // JWT authentication
     if (token.split('.').length === 3) { // Basic check for JWT format
         try {
-            const decoded = jwt.verify(token, config.jwtSecret) as any;
+            const decoded = jwt.verify(token, config.security.jwtSecret) as any;
             req.user = {
                 id: decoded.id,
                 email: decoded.email,

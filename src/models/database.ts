@@ -7,7 +7,7 @@ class Database {
 
   constructor() {
     this.pool = new Pool({
-      connectionString: config.databaseUrl,
+      connectionString: config.database.url,
       max: 20,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 2000,
@@ -139,4 +139,4 @@ export async function initializeDatabase(): Promise<void> {
     logger.error('Database initialization failed', error);
     throw error;
   }
-} 
+}

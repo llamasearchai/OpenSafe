@@ -1,0 +1,1 @@
+{"rustc":4723136837156968084,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[5960890461022408646,"build_script_build",false,17718108799849202511]],"local":[{"RerunIfChanged":{"output":"debug/build/safety_analysis-48bd5405386571a3/output","paths":["src/","Cargo.toml"]}}],"rustflags":[],"config":0,"compile_kind":0}

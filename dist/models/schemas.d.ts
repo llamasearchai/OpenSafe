@@ -35,7 +35,7 @@ export declare const MessageSchema: z.ZodObject<{
     }>, "many">>;
     tool_call_id: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    role: "user" | "system" | "assistant" | "tool";
+    role: "system" | "user" | "assistant" | "tool";
     content: string | null;
     name?: string | undefined;
     tool_calls?: {
@@ -48,7 +48,7 @@ export declare const MessageSchema: z.ZodObject<{
     }[] | undefined;
     tool_call_id?: string | undefined;
 }, {
-    role: "user" | "system" | "assistant" | "tool";
+    role: "system" | "user" | "assistant" | "tool";
     content: string | null;
     name?: string | undefined;
     tool_calls?: {
@@ -97,7 +97,7 @@ export declare const ChatRequestSchema: z.ZodObject<{
         }>, "many">>;
         tool_call_id: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        role: "user" | "system" | "assistant" | "tool";
+        role: "system" | "user" | "assistant" | "tool";
         content: string | null;
         name?: string | undefined;
         tool_calls?: {
@@ -110,7 +110,7 @@ export declare const ChatRequestSchema: z.ZodObject<{
         }[] | undefined;
         tool_call_id?: string | undefined;
     }, {
-        role: "user" | "system" | "assistant" | "tool";
+        role: "system" | "user" | "assistant" | "tool";
         content: string | null;
         name?: string | undefined;
         tool_calls?: {
@@ -153,7 +153,7 @@ export declare const ChatRequestSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     model: string;
     messages: {
-        role: "user" | "system" | "assistant" | "tool";
+        role: "system" | "user" | "assistant" | "tool";
         content: string | null;
         name?: string | undefined;
         tool_calls?: {
@@ -181,7 +181,7 @@ export declare const ChatRequestSchema: z.ZodObject<{
     custom_policy_id?: string | undefined;
 }, {
     messages: {
-        role: "user" | "system" | "assistant" | "tool";
+        role: "system" | "user" | "assistant" | "tool";
         content: string | null;
         name?: string | undefined;
         tool_calls?: {
@@ -300,11 +300,11 @@ export declare const ExperimentUpdateSchema: z.ZodObject<{
     results: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
     logs: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    status?: "pending" | "queued" | "running" | "completed" | "failed" | "cancelled" | undefined;
+    status?: "pending" | "completed" | "running" | "queued" | "failed" | "cancelled" | undefined;
     results?: Record<string, any> | undefined;
     logs?: string[] | undefined;
 }, {
-    status?: "pending" | "queued" | "running" | "completed" | "failed" | "cancelled" | undefined;
+    status?: "pending" | "completed" | "running" | "queued" | "failed" | "cancelled" | undefined;
     results?: Record<string, any> | undefined;
     logs?: string[] | undefined;
 }>;
@@ -314,8 +314,8 @@ export declare const UserRegistrationSchema: z.ZodObject<{
     role: z.ZodDefault<z.ZodOptional<z.ZodNativeEnum<typeof UserRole>>>;
 }, "strip", z.ZodTypeAny, {
     email: string;
-    password: string;
     role: UserRole;
+    password: string;
 }, {
     email: string;
     password: string;
@@ -361,10 +361,10 @@ export declare const PolicyRuleSchema: z.ZodObject<{
         type: z.ZodEnum<["regex", "keyword_list", "semantic_similarity", "model_threshold", "script"]>;
         parameters: z.ZodRecord<z.ZodString, z.ZodAny>;
     }, "strip", z.ZodTypeAny, {
-        type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+        type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
         parameters: Record<string, any>;
     }, {
-        type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+        type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
         parameters: Record<string, any>;
     }>;
     action: z.ZodEnum<["block", "flag", "redact", "revise", "escalate", "log_only"]>;
@@ -374,20 +374,20 @@ export declare const PolicyRuleSchema: z.ZodObject<{
     action: "block" | "flag" | "redact" | "revise" | "escalate" | "log_only";
     description: string;
     condition: {
-        type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+        type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
         parameters: Record<string, any>;
     };
-    severity: "low" | "medium" | "high" | "critical";
+    severity: "medium" | "low" | "high" | "critical";
     violationType: ViolationType;
     id?: string | undefined;
 }, {
     action: "block" | "flag" | "redact" | "revise" | "escalate" | "log_only";
     description: string;
     condition: {
-        type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+        type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
         parameters: Record<string, any>;
     };
-    severity: "low" | "medium" | "high" | "critical";
+    severity: "medium" | "low" | "high" | "critical";
     violationType: ViolationType;
     id?: string | undefined;
 }>;
@@ -404,10 +404,10 @@ export declare const SafetyPolicySchema: z.ZodObject<{
             type: z.ZodEnum<["regex", "keyword_list", "semantic_similarity", "model_threshold", "script"]>;
             parameters: z.ZodRecord<z.ZodString, z.ZodAny>;
         }, "strip", z.ZodTypeAny, {
-            type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+            type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
             parameters: Record<string, any>;
         }, {
-            type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+            type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
             parameters: Record<string, any>;
         }>;
         action: z.ZodEnum<["block", "flag", "redact", "revise", "escalate", "log_only"]>;
@@ -417,35 +417,35 @@ export declare const SafetyPolicySchema: z.ZodObject<{
         action: "block" | "flag" | "redact" | "revise" | "escalate" | "log_only";
         description: string;
         condition: {
-            type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+            type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
             parameters: Record<string, any>;
         };
-        severity: "low" | "medium" | "high" | "critical";
+        severity: "medium" | "low" | "high" | "critical";
         violationType: ViolationType;
         id?: string | undefined;
     }, {
         action: "block" | "flag" | "redact" | "revise" | "escalate" | "log_only";
         description: string;
         condition: {
-            type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+            type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
             parameters: Record<string, any>;
         };
-        severity: "low" | "medium" | "high" | "critical";
+        severity: "medium" | "low" | "high" | "critical";
         violationType: ViolationType;
         id?: string | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
-    isActive: boolean;
     name: string;
     version: string;
+    isActive: boolean;
     rules: {
         action: "block" | "flag" | "redact" | "revise" | "escalate" | "log_only";
         description: string;
         condition: {
-            type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+            type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
             parameters: Record<string, any>;
         };
-        severity: "low" | "medium" | "high" | "critical";
+        severity: "medium" | "low" | "high" | "critical";
         violationType: ViolationType;
         id?: string | undefined;
     }[];
@@ -457,17 +457,17 @@ export declare const SafetyPolicySchema: z.ZodObject<{
         action: "block" | "flag" | "redact" | "revise" | "escalate" | "log_only";
         description: string;
         condition: {
-            type: "regex" | "keyword_list" | "semantic_similarity" | "model_threshold" | "script";
+            type: "keyword_list" | "regex" | "semantic_similarity" | "model_threshold" | "script";
             parameters: Record<string, any>;
         };
-        severity: "low" | "medium" | "high" | "critical";
+        severity: "medium" | "low" | "high" | "critical";
         violationType: ViolationType;
         id?: string | undefined;
     }[];
     id?: string | undefined;
-    isActive?: boolean | undefined;
     description?: string | undefined;
     version?: string | undefined;
+    isActive?: boolean | undefined;
 }>;
 export type SafetyPolicy = z.infer<typeof SafetyPolicySchema>;
 export type PolicyRule = z.infer<typeof PolicyRuleSchema>;
@@ -480,20 +480,20 @@ export declare const AuditLogFilterSchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
     limit: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
-    limit: number;
     page: number;
+    limit: number;
     userId?: string | undefined;
     action?: string | undefined;
     resourceType?: string | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
 }, {
-    limit?: number | undefined;
     userId?: string | undefined;
     action?: string | undefined;
     resourceType?: string | undefined;
-    page?: number | undefined;
     startDate?: string | undefined;
     endDate?: string | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
 }>;
 //# sourceMappingURL=schemas.d.ts.map

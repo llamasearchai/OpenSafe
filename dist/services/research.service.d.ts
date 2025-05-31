@@ -1,29 +1,19 @@
-import { ResearchExperiment, UserRole } from '../models/types';
-import { ResearchExperimentSchema } from '../models/schemas';
-import { z } from 'zod';
+import { ResearchExperiment, ExperimentResults } from '../models/types';
 export declare class ResearchService {
-    private redis;
+    private experiments;
     constructor();
-    private connectRedis;
-    createExperiment(params: z.infer<typeof ResearchExperimentSchema>, actorId: string): Promise<ResearchExperiment>;
-    queueExperiment(id: string, actorId: string): Promise<ResearchExperiment>;
-    getExperiment(id: string, actorId: string, actorRole?: UserRole): Promise<ResearchExperiment | null>;
+    createExperiment(params: {
+        hypothesis: string;
+        experiment_type: string;
+        parameters?: Record<string, any>;
+    }): Promise<ResearchExperiment>;
+    getExperiment(id: string): Promise<ResearchExperiment | null>;
     listExperiments(filters: {
-        status?: ResearchExperiment['status'];
-        userId?: string;
-        page?: number;
-        limit?: number;
-    }, actorId: string, actorRole: UserRole): Promise<{
-        experiments: ResearchExperiment[];
-        total: number;
-        pages: number;
-    }>;
-    private processExperimentQueue;
-    private runExperimentInternal;
+        status?: string;
+    }): Promise<ResearchExperiment[]>;
+    runExperiment(id: string): Promise<ExperimentResults>;
     private generateMethodology;
-    private executeSimulatedExperiment;
-    private updateExperimentInDb;
-    cancelExperiment(id: string, actorId: string): Promise<ResearchExperiment>;
+    private executeExperiment;
 }
 export declare const researchService: ResearchService;
 //# sourceMappingURL=research.service.d.ts.map

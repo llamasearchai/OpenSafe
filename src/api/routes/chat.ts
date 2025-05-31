@@ -7,7 +7,7 @@ import { validateBody } from '../../middleware/validation';
 const router = Router();
 
 // Simple asyncHandler
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => 
+const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>) => 
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
@@ -30,9 +30,10 @@ router.post('/completions',
       );
 
       res.json({ completion });
-    } catch (error: any) {
-      if (error.statusCode) {
-        res.status(error.statusCode).json({ error: error.message });
+    } catch (error: unknown) {
+      const err = error as { statusCode?: number; message?: string };
+      if (err.statusCode) {
+        res.status(err.statusCode).json({ error: err.message });
       } else {
         res.status(500).json({ error: 'Internal server error' });
       }
@@ -53,7 +54,7 @@ router.post('/stream',
 
       await openAIService.createSafeStreamingCompletion(
         req.body,
-        (chunk: any, isSafe: boolean, violations?: any[]) => {
+        (chunk: Record<string, unknown>, isSafe: boolean, violations?: unknown[]) => {
           const dataToSend = { 
             ...chunk, 
             safety_status: { 
@@ -63,28 +64,30 @@ router.post('/stream',
           };
           res.write(`data: ${JSON.stringify(dataToSend)}\n\n`);
         },
-        (_fullResponseText: string, finalSafety: any) => {
+        (_fullResponseText: string, finalSafety: unknown) => {
           res.write(`data: ${JSON.stringify({ event: 'done', final_safety_analysis: finalSafety })}\n\n`);
           res.end();
         },
-        (error: any) => {
+        (error: unknown) => {
+          const err = error as { statusCode?: number; message?: string };
           if (!res.headersSent) {
-            if (error.statusCode) {
-              res.status(error.statusCode).json({ error: error.message });
+            if (err.statusCode) {
+              res.status(err.statusCode).json({ error: err.message });
             } else {
               res.status(500).json({ error: 'Streaming failed' });
             }
           } else {
-            res.write(`data: ${JSON.stringify({ error: 'stream_failed', message: error.message })}\n\n`);
+            res.write(`data: ${JSON.stringify({ error: 'stream_failed', message: err.message })}\n\n`);
             res.end();
           }
         },
         req.user!.id
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { statusCode?: number; message?: string };
       if (!res.headersSent) {
-        if (error.statusCode) {
-          res.status(error.statusCode).json({ error: error.message });
+        if (err.statusCode) {
+          res.status(err.statusCode).json({ error: err.message });
         } else {
           res.status(500).json({ error: 'Internal server error' });
         }

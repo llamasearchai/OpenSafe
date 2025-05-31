@@ -100,7 +100,7 @@ export class UserService {
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
-      config.jwtSecret,
+      config.security.jwtSecret,
       { expiresIn: '24h' } // Consider making this configurable
     );
 

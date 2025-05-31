@@ -1,7 +1,7 @@
-import { Registry, Counter, Histogram, Gauge, Summary } from 'prom-client';
+import { Histogram, Counter, Gauge, Summary } from 'prom-client';
 import { Request, Response, NextFunction } from 'express';
 export declare class MetricsCollector {
-    register: Registry;
+    register: import("prom-client").Registry<"text/plain; version=0.0.4; charset=utf-8">;
     private counters;
     private histograms;
     private gauges;

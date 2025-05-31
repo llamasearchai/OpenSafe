@@ -2,24 +2,24 @@
 
 set -e
 
-echo "🚀 Building OpenAI Safe Platform..."
+echo "Building OpenVault AI Security Platform..."
 
 # Install Node dependencies
-echo "📦 Installing Node.js dependencies..."
+echo "Installing Node.js dependencies..."
 npm ci
 
 # Build Rust library
-echo "🦀 Building Rust native library..."
+echo "Building Rust native library..."
 cd native
 cargo build --release
 cd ..
 
 # Build TypeScript
-echo "📝 Building TypeScript..."
+echo "Building TypeScript..."
 npm run build
 
 # Run tests
-echo "🧪 Running tests..."
+echo "Running tests..."
 npm test
 
-echo "✅ Build completed successfully!" 
+echo "Build completed successfully!" 

@@ -279,7 +279,7 @@ impl InterpretabilityAnalyzer {
         let text_lower = text.to_lowercase();
         
         for concept in &self.safety_concepts {
-            let mut strength = 0.0;
+            let mut strength: f32 = 0.0;
             let mut supporting_tokens = Vec::new();
             let mut match_count = 0;
             
@@ -297,17 +297,17 @@ impl InterpretabilityAnalyzer {
                         }
                     }
                 }
-            }
-            
-            if strength > 0.0 {
-                let confidence = (match_count as f32 / keywords.len() as f32).min(1.0);
                 
-                concept_activations.push(ConceptActivation {
-                    concept: concept.clone(),
-                    strength: strength.min(1.0),
-                    confidence,
-                    supporting_tokens: supporting_tokens.into_iter().take(5).collect(),
-                });
+                if strength > 0.0 {
+                    let confidence = (match_count as f32 / keywords.len() as f32).min(1.0);
+                
+                    concept_activations.push(ConceptActivation {
+                        concept: concept.clone(),
+                        strength: strength.min(1.0),
+                        confidence,
+                        supporting_tokens: supporting_tokens.into_iter().take(5).collect(),
+                    });
+                }
             }
         }
         

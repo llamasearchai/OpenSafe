@@ -6,14 +6,14 @@ import { validateBody } from '../../middleware/validation';
 const router = Router();
 
 // Simple asyncHandler
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => 
+const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>) => 
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 
 // Mock safety service
 const safetyService = {
-  analyzeText: async (_data: any) => ({
+  analyzeText: async (_data: { text: string; userId: string; mode?: string }) => ({
     safe: true,
     score: 0.95,
     violations: [],
@@ -23,7 +23,7 @@ const safetyService = {
       timestamp: new Date().toISOString()
     }
   }),
-  applyConstitutionalPrinciples: async (data: any) => ({
+  applyConstitutionalPrinciples: async (data: { text: string; principles?: string[] }) => ({
     original: data.text,
     revised: data.text,
     critiques: [],

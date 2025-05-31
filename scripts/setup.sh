@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Setting up OpenAI Safe Platform..."
+echo "Setting up OpenVault AI Security Platform..."
 
 # Colors
 GREEN='\033[0;32m'

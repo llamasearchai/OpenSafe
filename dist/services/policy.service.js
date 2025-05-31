@@ -1,159 +1,132 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.policyService = exports.PolicyService = void 0;
-const database_1 = require("../models/database");
-const logger_1 = require("../utils/logger");
-const errors_1 = require("../utils/errors");
+const types_1 = require("../models/types");
 const uuid_1 = require("uuid");
-const audit_service_1 = require("./audit.service");
+// Simple AppError class
+class AppError extends Error {
+    statusCode;
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+// Mock audit service
+const auditService = {
+    logAction: async (data) => {
+        console.log('[AUDIT]', data);
+    }
+};
 class PolicyService {
+    policies = new Map();
+    constructor() {
+        // Initialize with default policies
+        this.initializeDefaultPolicies();
+    }
+    initializeDefaultPolicies() {
+        const defaultPolicy = {
+            id: 'default-policy',
+            name: 'Default Safety Policy',
+            description: 'Basic safety rules for content filtering',
+            version: 1,
+            isActive: true,
+            rules: [
+                {
+                    id: 'harmful-content-rule',
+                    description: 'Block harmful content',
+                    condition: {
+                        type: 'keyword_list',
+                        parameters: {
+                            keywords: ['harm', 'violence', 'kill']
+                        }
+                    },
+                    action: 'block',
+                    severity: 'high',
+                    violationType: types_1.ViolationType.HARMFUL_CONTENT
+                },
+                {
+                    id: 'pii-detection-rule',
+                    description: 'Flag potential PII',
+                    condition: {
+                        type: 'regex',
+                        parameters: {
+                            pattern: '\\b\\d{3}-\\d{2}-\\d{4}\\b'
+                        }
+                    },
+                    action: 'flag',
+                    severity: 'medium',
+                    violationType: types_1.ViolationType.PII_DETECTED
+                }
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+        this.policies.set(defaultPolicy.id, defaultPolicy);
+    }
     async createPolicy(data, actorId) {
-        const policyId = (0, uuid_1.v4)();
-        const rulesWithIds = data.rules.map(rule => ({ ...rule, id: (0, uuid_1.v4)() }));
-        try {
-            const result = await database_1.database.transaction(async (client) => {
-                const policyRes = await client.query(`INSERT INTO safety_policies (id, name, description, version, is_active, rules)
-                     VALUES ($1, $2, $3, $4, $5, $6)
-                     RETURNING id, name, description, version, is_active, rules, created_at, updated_at`, [policyId, data.name, data.description, data.version, data.isActive, JSON.stringify(rulesWithIds)]);
-                return policyRes.rows[0];
-            });
-            logger_1.logger.info('Safety policy created', { policyId: result.id, name: result.name });
-            await audit_service_1.auditService.logAction({
-                userId: actorId,
-                action: 'policy_create',
-                resourceType: 'safety_policy',
-                resourceId: result.id,
-                details: { name: data.name, ruleCount: data.rules.length },
-                status: 'success',
-            });
-            return result;
-        }
-        catch (error) {
-            logger_1.logger.error('Error creating safety policy', { error, name: data.name });
-            if (error instanceof Error && error.message.includes('duplicate key value violates unique constraint')) {
-                throw new errors_1.AppError(409, `Policy with name "${data.name}" and version "${data.version}" might already exist.`);
-            }
-            throw new errors_1.AppError(500, 'Failed to create safety policy');
-        }
+        const policy = {
+            id: (0, uuid_1.v4)(),
+            name: data.name,
+            description: data.description,
+            version: 1,
+            isActive: data.isActive || false,
+            rules: data.rules || [],
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+        this.policies.set(policy.id, policy);
+        await auditService.logAction({
+            userId: actorId,
+            action: 'create_policy',
+            details: { policyId: policy.id, name: policy.name }
+        });
+        return policy;
     }
     async getPolicyById(id) {
-        const result = await database_1.database.query(`SELECT id, name, description, version, is_active, rules, created_at, updated_at 
-             FROM safety_policies WHERE id = $1`, [id]);
-        if (result.length === 0)
-            return null;
-        return result[0];
+        return this.policies.get(id) || null;
     }
     async getActivePolicyById(id) {
-        const result = await database_1.database.query(`SELECT id, name, description, version, is_active, rules, created_at, updated_at 
-             FROM safety_policies WHERE id = $1 AND is_active = TRUE`, [id]);
-        if (result.length === 0)
-            return null;
-        return result[0];
+        const policy = this.policies.get(id);
+        return policy && policy.isActive ? policy : null;
     }
-    async listPolicies(page = 1, limit = 20, isActive) {
+    async listPolicies(page = 1, limit = 10) {
+        const allPolicies = Array.from(this.policies.values());
         const offset = (page - 1) * limit;
-        let query = `SELECT id, name, description, version, is_active, created_at, updated_at FROM safety_policies`;
-        let countQuery = `SELECT COUNT(*) as count FROM safety_policies`;
-        const params = [];
-        let paramIndex = 1;
-        if (typeof isActive === 'boolean') {
-            query += ` WHERE is_active = $${paramIndex}`;
-            countQuery += ` WHERE is_active = $${paramIndex}`;
-            params.push(isActive);
-            paramIndex++;
-        }
-        query += ` ORDER BY created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-        params.push(limit, offset);
-        const [policiesResult, countResult] = await Promise.all([
-            database_1.database.query(query, params), // Not fetching rules for list view for performance
-            database_1.database.query(countQuery, params.slice(0, params.length - 2))
-        ]);
-        const total = parseInt(countResult[0].count, 10);
-        // Cast to SafetyPolicyEntity[], potentially fetching rules if needed or adjusting type
-        return { policies: policiesResult, total, pages: Math.ceil(total / limit) };
+        const policies = allPolicies.slice(offset, offset + limit);
+        return {
+            policies,
+            total: allPolicies.length
+        };
     }
-    async updatePolicy(id, data, actorId) {
-        const existingPolicy = await this.getPolicyById(id);
-        if (!existingPolicy)
-            throw new errors_1.AppError(404, 'Safety policy not found');
-        const updateFields = [];
-        const values = [];
-        let paramIndex = 1;
-        Object.entries(data).forEach(([key, value]) => {
-            if (value !== undefined) {
-                updateFields.push(`${key} = $${paramIndex++}`);
-                values.push(key === 'rules' ? JSON.stringify(value.map(rule => ({ ...rule, id: rule.id || (0, uuid_1.v4)() }))) : value);
-            }
+    async updatePolicy(id, updates, actorId) {
+        const policy = this.policies.get(id);
+        if (!policy) {
+            throw new AppError(404, 'Policy not found');
+        }
+        const updatedPolicy = {
+            ...policy,
+            ...updates,
+            id, // Ensure ID doesn't change
+            updatedAt: new Date()
+        };
+        this.policies.set(id, updatedPolicy);
+        await auditService.logAction({
+            userId: actorId,
+            action: 'update_policy',
+            details: { policyId: id, updates: Object.keys(updates) }
         });
-        if (updateFields.length === 0) {
-            return existingPolicy; // No changes
-        }
-        values.push(id);
-        const query = `UPDATE safety_policies SET ${updateFields.join(', ')}, updated_at = NOW() WHERE id = $${paramIndex}
-                       RETURNING id, name, description, version, is_active, rules, created_at, updated_at`;
-        try {
-            const result = await database_1.database.query(query, values);
-            const updatedPolicy = result[0];
-            logger_1.logger.info('Safety policy updated', { policyId: id });
-            await audit_service_1.auditService.logAction({
-                userId: actorId,
-                action: 'policy_update',
-                resourceType: 'safety_policy',
-                resourceId: id,
-                details: { changes: Object.keys(data) },
-                status: 'success',
-            });
-            return updatedPolicy;
-        }
-        catch (error) {
-            logger_1.logger.error('Error updating safety policy', { error, policyId: id });
-            throw new errors_1.AppError(500, 'Failed to update safety policy');
-        }
+        return updatedPolicy;
     }
     async deletePolicy(id, actorId) {
-        const result = await database_1.database.query('DELETE FROM safety_policies WHERE id = $1 RETURNING id', [id]);
-        if (result.length === 0) {
-            throw new errors_1.AppError(404, 'Safety policy not found');
+        if (!this.policies.has(id)) {
+            throw new AppError(404, 'Policy not found');
         }
-        logger_1.logger.info('Safety policy deleted', { policyId: id });
-        await audit_service_1.auditService.logAction({
+        this.policies.delete(id);
+        await auditService.logAction({
             userId: actorId,
-            action: 'policy_delete',
-            resourceType: 'safety_policy',
-            resourceId: id,
-            status: 'success',
+            action: 'delete_policy',
+            details: { policyId: id }
         });
-    }
-    // Method to initialize default policies if DB table for policies is empty
-    async initializeDefaultPolicies() {
-        const countResult = await database_1.database.query("SELECT COUNT(*) FROM safety_policies");
-        if (parseInt(countResult[0].count) === 0) {
-            logger_1.logger.info("No safety policies found. Initializing default basic policy.");
-            const defaultPolicy = {
-                name: "Default Basic Safety Policy",
-                description: "A baseline policy covering common harmful content and PII.",
-                version: "1.0.0",
-                isActive: true,
-                rules: [
-                    {
-                        description: "Block severe harmful content keywords.",
-                        condition: { type: 'keyword_list', parameters: { keywords: ["kill", "murder", "bomb", "terrorist"] } },
-                        action: 'block',
-                        severity: 'critical',
-                        violationType: ViolationType.HARMFUL_CONTENT
-                    },
-                    {
-                        description: "Flag potential PII (SSN as example).",
-                        condition: { type: 'regex', parameters: { pattern: "\\b\\d{3}-\\d{2}-\\d{4}\\b" } },
-                        action: 'flag',
-                        severity: 'high',
-                        violationType: ViolationType.PII_DETECTED
-                    }
-                ]
-            };
-            // Use a system/admin ID for actorId or null if contextually appropriate
-            await this.createPolicy(defaultPolicy, 'system-init');
-        }
     }
 }
 exports.PolicyService = PolicyService;

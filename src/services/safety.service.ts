@@ -2,9 +2,9 @@ import { SafetyAnalysisResult, ConstitutionalAIResult } from '../models/types';
 
 // Simple logger fallback
 const logger = {
-  warn: (...args: any[]) => console.warn('[WARN]', ...args),
-  error: (...args: any[]) => console.error('[ERROR]', ...args),
-  info: (...args: any[]) => console.info('[INFO]', ...args),
+  warn: (...args: unknown[]) => console.warn('[WARN]', ...args),
+  error: (...args: unknown[]) => console.error('[ERROR]', ...args),
+  info: (...args: unknown[]) => console.info('[INFO]', ...args),
 };
 
 // Simple AppError class
@@ -18,14 +18,22 @@ class AppError extends Error {
 
 // Mock audit service
 const auditService = {
-  logAction: async (data: any) => {
+  logAction: async (data: Record<string, unknown>) => {
     console.log('[AUDIT]', data);
   }
 };
 
+interface SafetyAnalyzer {
+  analyze: (text: string, context?: string) => Promise<SafetyAnalysisResult>;
+}
+
+interface ConstitutionalAI {
+  applyPrinciples: (text: string, options: { principles?: string[]; max_revisions?: number }) => Promise<ConstitutionalAIResult>;
+}
+
 export class SafetyService {
-  private safetyAnalyzer: any;
-  private constitutionalAI: any;
+  private safetyAnalyzer: SafetyAnalyzer;
+  private constitutionalAI: ConstitutionalAI;
 
   constructor() {
     // Mock implementations
@@ -43,7 +51,7 @@ export class SafetyService {
     };
 
     this.constitutionalAI = {
-      applyPrinciples: async (text: string, _options: any) => ({
+      applyPrinciples: async (text: string, _options: { principles?: string[]; max_revisions?: number }) => ({
         original: text,
         revised: text,
         critiques: [],
@@ -67,7 +75,7 @@ export class SafetyService {
   ): Promise<SafetyAnalysisResult> {
     try {
       const { text, context, policy_id } = params;
-      let analysisResult = await this.safetyAnalyzer.analyze(text, context);
+      const analysisResult = await this.safetyAnalyzer.analyze(text, context);
       
       await auditService.logAction({
         userId: actorId,

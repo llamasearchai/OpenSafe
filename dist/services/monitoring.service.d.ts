@@ -1,20 +1,22 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-import { MetricsCollector } from '../utils/metrics';
+import { ViolationType } from '../models/types';
 export declare class MonitoringService extends EventEmitter {
     private metrics;
     private alerts;
-    private anomalyDetectionInterval?;
-    private hourlyViolationCounts;
-    constructor(metricsCollectorInstance?: MetricsCollector);
-    private setupMonitoringListeners;
-    triggerAlert(type: string, data: any, severity?: 'info' | 'warning' | 'error' | 'critical'): void;
-    private sendToExternalAlertingService;
-    getMetricsSnapshot(): Promise<string>;
-    getActiveAlerts(since?: Date): any[];
-    acknowledgeAlert(alertId: string, userId: string): boolean;
-    private runAnomalyDetectionTasks;
-    private getSeverityForType;
+    constructor();
+    private setupMonitoring;
+    triggerAlert(type: string, data: any): void;
+    private sendToAlertingService;
+    getMetrics(): Promise<string>;
+    getAlerts(since?: Date): any[];
+    checkSystemHealth(): Promise<boolean>;
+    detectAnomalies(violationData: {
+        type: ViolationType;
+        severity: string;
+        timestamp: Date;
+    }[]): void;
+    cleanupAlerts(olderThan: Date): void;
 }
 export declare const monitoringService: MonitoringService;
 //# sourceMappingURL=monitoring.service.d.ts.map

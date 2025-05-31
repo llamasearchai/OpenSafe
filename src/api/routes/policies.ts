@@ -5,14 +5,14 @@ import { ViolationType, PolicyAction } from '../../models/types';
 const router = Router();
 
 // Simple asyncHandler
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => 
+const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>) => 
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 
 // Simple audit service fallback
 const auditService = {
-  logAction: async (data: any) => {
+  logAction: async (data: Record<string, unknown>) => {
     console.log('[AUDIT]', data);
   }
 };
@@ -38,7 +38,7 @@ router.get('/suggest',
     const { content, targetViolationType } = req.query;
     
     // Simple policy suggestion based on content
-    let suggestedRule = {
+    const suggestedRule = {
       description: `Auto-generated rule for ${targetViolationType || 'general'} content`,
       condition: {
         type: 'keyword_list' as const,

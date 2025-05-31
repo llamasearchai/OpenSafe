@@ -27,7 +27,7 @@ describe('UserService', () => {
         .mockResolvedValueOnce([]) // No existing user
         .mockResolvedValueOnce([{ id: 'uuid-123', email: mockUserEmail, role: UserRole.USER, created_at: new Date(), updated_at: new Date() }]); // New user
 
-      const user = await userService.createUser({ email: mockUserEmail, password: mockUserPassword });
+      const user = await userService.createUser({ email: mockUserEmail, password: mockUserPassword, role: UserRole.USER });
 
       expect(database.query).toHaveBeenCalledTimes(2);
       expect(bcrypt.hash).toHaveBeenCalledWith(mockUserPassword, 12);
@@ -39,7 +39,7 @@ describe('UserService', () => {
     it('should throw an error if user already exists', async () => {
       (database.query as jest.Mock).mockResolvedValueOnce([{ id: 'existing-uuid' }]); // Existing user
 
-      await expect(userService.createUser({ email: mockUserEmail, password: mockUserPassword }))
+      await expect(userService.createUser({ email: mockUserEmail, password: mockUserPassword, role: UserRole.USER }))
         .rejects.toThrow(new AppError(409, 'User with this email already exists'));
       expect(auditService.logAction).not.toHaveBeenCalled();
     });

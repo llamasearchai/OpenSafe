@@ -5,8 +5,8 @@ import { userService } from '../../src/services/user.service';
 import { UserRole, ViolationType, PolicyAction } from '../../src/models/types';
 import { policyService } from '../../src/services/policy.service';
 
-let adminToken: string;
 let adminUserId: string;
+let adminToken: string;
 let researcherToken: string;
 let researcherUserId: string;
 

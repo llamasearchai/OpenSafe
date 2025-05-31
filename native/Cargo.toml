@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2021"
 description = "High-performance AI safety analysis library"
 license = "MIT"
-authors = ["OpenAI Safe Team"]
+authors = ["OpenVault Team"]
 
 [lib]
 crate-type = ["cdylib"]

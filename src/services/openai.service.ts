@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { config } from '../config';
+import { config, getProviderApiKey } from '../config';
 import { ChatRequestSchema } from '../models/schemas';
 import { ConstitutionalAIResult } from '../models/types';
 import { z } from 'zod';
@@ -52,8 +52,13 @@ export class OpenAIService {
   private openai: OpenAI;
 
   constructor() {
+    const apiKey = getProviderApiKey(config.provider);
+    if (!apiKey) {
+      throw new Error(`API key not found for provider: ${config.provider}`);
+    }
+    
     this.openai = new OpenAI({ 
-        apiKey: config.openaiApiKey,
+        apiKey: apiKey,
         timeout: 60 * 1000,
         maxRetries: 2,
     });

@@ -8,7 +8,7 @@ class Database {
     pool;
     constructor() {
         this.pool = new pg_1.Pool({
-            connectionString: config_1.config.databaseUrl,
+            connectionString: config_1.config.database.url,
             max: 20,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 2000,

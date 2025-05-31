@@ -1,21 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MetricsCollector = void 0;
-const prom_client_1 = require("prom-client"); // Added Summary
+const prom_client_1 = require("prom-client");
+// Simple logger fallback
+const logger = {
+    warn: (...args) => console.warn('[WARN]', ...args),
+};
+// Simple monitoring service mock
+const monitoringService = {
+    emit: (event, data) => {
+        console.log(`[MONITORING] ${event}:`, data);
+    }
+};
 class MetricsCollector {
-    register;
-    counters;
-    histograms;
-    gauges;
-    summaries; // Added Summaries
+    register = prom_client_1.register;
+    counters = new Map();
+    histograms = new Map();
+    gauges = new Map();
+    summaries = new Map();
     constructor() {
-        this.register = new prom_client_1.Registry();
-        // Add default metrics
-        prom_client_1.Registry.collectDefaultMetrics({ register: this.register });
-        this.counters = new Map();
-        this.histograms = new Map();
-        this.gauges = new Map();
-        this.summaries = new Map();
+        // Collect default metrics
+        prom_client_1.register.clear();
+        require('prom-client').collectDefaultMetrics({ register: this.register });
         this.initializeMetrics();
     }
     initializeMetrics() {

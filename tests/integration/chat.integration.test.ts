@@ -4,8 +4,6 @@ import { database } from '../../src/models/database';
 import { userService } from '../../src/services/user.service';
 import { openAIService } from '../../src/services/openai.service'; // To mock OpenAI calls
 import { UserRole } from '../../src/models/types';
-import OpenAI from 'openai';
-
 jest.mock('../../src/services/openai.service'); // Mock the entire OpenAIService
 
 const mockOpenAIService = openAIService as jest.Mocked<typeof openAIService>;
@@ -103,7 +101,7 @@ describe('POST /api/v1/chat/completions - Chat Integration Tests', () => {
 
   it('should reject unsafe input in strict mode if service throws AppError', async () => {
     (mockOpenAIService.createSafeChatCompletion as jest.Mock).mockRejectedValue(
-      new AppError(400, 'Input failed safety check (strict mode).', { violations: [{ type: 'harmful_content' }] })
+      new AppError(400, 'Input failed safety check (strict mode).')
     );
 
     const response = await request(app)
@@ -123,7 +121,7 @@ describe('POST /api/v1/chat/completions - Chat Integration Tests', () => {
   it('should handle streaming requests correctly', async () => {
     // Mock the streaming service behavior
     (mockOpenAIService.createSafeStreamingCompletion as jest.Mock).mockImplementation(
-      async (params, onChunk, onComplete, onError, actorId) => {
+      async (_params, onChunk, onComplete, _onError, _actorId) => {
         // Simulate a few chunks
         onChunk({ id: 'chunk1', choices: [{ delta: { content: 'Hello ' } }] }, true, []);
         await new Promise(r => setTimeout(r, 10)); // Simulate delay
@@ -184,3 +182,14 @@ describe('POST /api/v1/chat/completions - Chat Integration Tests', () => {
   });
 
 }); 
+
+// Mock AppError
+class AppError extends Error {
+  statusCode: number;
+  constructor(statusCode: number, message: string) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+} 
+
+ 

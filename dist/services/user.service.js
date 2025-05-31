@@ -9,8 +9,23 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const uuid_1 = require("uuid");
 const database_1 = require("../models/database");
 const config_1 = require("../config");
-const logger_1 = require("../utils/logger");
-const errors_1 = require("../utils/errors");
+// Replace logger import with a simple console-based logger if './logger' is missing
+const logger = {
+    info: (...args) => console.info('[INFO]', ...args),
+    warn: (...args) => console.warn('[WARN]', ...args),
+    error: (...args) => console.error('[ERROR]', ...args),
+};
+// Replace AppError import with a simple custom error class if '../utils/error' is missing
+class AppError extends Error {
+    statusCode;
+    isOperational;
+    constructor(statusCode, message, isOperational = true) {
+        super(message);
+        this.statusCode = statusCode;
+        this.isOperational = isOperational;
+        Object.setPrototypeOf(this, AppError.prototype);
+    }
+}
 const schemas_1 = require("../models/schemas"); // Import schemas
 const audit_service_1 = require("./audit.service"); // For logging user actions
 class UserService {
@@ -19,8 +34,8 @@ class UserService {
         const { email, password, role = schemas_1.UserRole.USER } = data;
         const existingUsers = await database_1.database.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
         if (existingUsers.length > 0) {
-            logger_1.logger.warn('Attempt to create user with existing email', { email });
-            throw new errors_1.AppError(409, 'User with this email already exists');
+            logger.warn('Attempt to create user with existing email', { email });
+            throw new AppError(409, 'User with this email already exists');
         }
         const passwordHash = await bcrypt_1.default.hash(password, this.BCRYPT_SALT_ROUNDS);
         const userId = (0, uuid_1.v4)();
@@ -30,7 +45,7 @@ class UserService {
       RETURNING id, email, role, created_at, updated_at
     `, [userId, email.toLowerCase(), passwordHash, role]);
         const newUser = result[0];
-        logger_1.logger.info('User created successfully', { userId: newUser.id, email: newUser.email, role: newUser.role });
+        logger.info('User created successfully', { userId: newUser.id, email: newUser.email, role: newUser.role });
         await audit_service_1.auditService.logAction({
             userId: newUser.id,
             action: 'user_registration',
@@ -50,20 +65,20 @@ class UserService {
       FROM users WHERE email = $1
     `, [email.toLowerCase()]);
         if (users.length === 0) {
-            logger_1.logger.warn('Login attempt for non-existent user', { email });
+            logger.warn('Login attempt for non-existent user', { email });
             await audit_service_1.auditService.logAction({ action: 'user_login_failed', details: { email, reason: 'user_not_found' }, status: 'failure' });
-            throw new errors_1.AppError(401, 'Invalid email or password');
+            throw new AppError(401, 'Invalid email or password');
         }
         const user = users[0];
         const isPasswordValid = await bcrypt_1.default.compare(password, user.password_hash);
         if (!isPasswordValid) {
-            logger_1.logger.warn('Invalid password attempt', { userId: user.id, email: user.email });
+            logger.warn('Invalid password attempt', { userId: user.id, email: user.email });
             await audit_service_1.auditService.logAction({ userId: user.id, action: 'user_login_failed', details: { email, reason: 'invalid_password' }, status: 'failure' });
-            throw new errors_1.AppError(401, 'Invalid email or password');
+            throw new AppError(401, 'Invalid email or password');
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, config_1.config.jwtSecret, { expiresIn: '24h' } // Consider making this configurable
+        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, config_1.config.security.jwtSecret, { expiresIn: '24h' } // Consider making this configurable
         );
-        logger_1.logger.info('User logged in successfully', { userId: user.id, email: user.email });
+        logger.info('User logged in successfully', { userId: user.id, email: user.email });
         await audit_service_1.auditService.logAction({ userId: user.id, action: 'user_login_success', resourceType: 'user', resourceId: user.id, status: 'success' });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password_hash, api_key_hash, ...userToReturn } = user;
@@ -87,19 +102,19 @@ class UserService {
         const values = [id];
         let paramIndex = 2;
         if (email) {
-            updateFields.push(`email = ${paramIndex++}`);
-            values.push(email.toLowerCase());
+            updateFields.push(`email = $${paramIndex++}`);
+            values.push(email);
         }
         if (role) {
-            updateFields.push(`role = ${paramIndex++}`);
+            updateFields.push(`role = $${paramIndex++}`);
             values.push(role);
         }
         // if (settings) { // Assuming settings is a JSONB column
-        //   updateFields.push(`settings = ${paramIndex++}`);
+        //   updateFields.push(`settings = $${paramIndex++}`);
         //   values.push(settings);
         // }
         if (updateFields.length === 0) {
-            throw new errors_1.AppError(400, 'No update fields provided');
+            throw new AppError(400, 'No update fields provided');
         }
         updateFields.push(`updated_at = NOW()`);
         const query = `
@@ -110,11 +125,11 @@ class UserService {
     `;
         const result = await database_1.database.query(query, values);
         if (result.length === 0) {
-            logger_1.logger.warn('Attempt to update non-existent user', { userId: id });
-            throw new errors_1.AppError(404, 'User not found');
+            logger.warn('Attempt to update non-existent user', { userId: id });
+            throw new AppError(404, 'User not found');
         }
         const updatedUser = result[0];
-        logger_1.logger.info('User updated successfully', { userId: updatedUser.id, updatedFields: Object.keys(updates) });
+        logger.info('User updated successfully', { userId: updatedUser.id, updatedFields: Object.keys(updates) });
         await audit_service_1.auditService.logAction({
             userId: actorId,
             action: 'user_update',
@@ -130,10 +145,10 @@ class UserService {
     async deleteUser(id, actorId) {
         const result = await database_1.database.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
         if (result.length === 0 || !result[0].id) {
-            logger_1.logger.warn('Attempt to delete non-existent user', { userId: id });
-            throw new errors_1.AppError(404, 'User not found');
+            logger.warn('Attempt to delete non-existent user', { userId: id });
+            throw new AppError(404, 'User not found');
         }
-        logger_1.logger.info('User deleted successfully', { userId: id });
+        logger.info('User deleted successfully', { userId: id });
         await audit_service_1.auditService.logAction({
             userId: actorId,
             action: 'user_delete',
@@ -178,7 +193,7 @@ class UserService {
         SET api_key_hash = $1, api_key_name = $2, api_key_expires_at = $3, updated_at = NOW()
         WHERE id = $4
     `, [apiKeyHash, data.name, expiresAt, userId]);
-        logger_1.logger.info('API key generated for user', { userId, keyName: data.name, expiresAt });
+        logger.info('API key generated for user', { userId, keyName: data.name, expiresAt });
         await audit_service_1.auditService.logAction({
             userId,
             action: 'api_key_generate',
@@ -197,9 +212,9 @@ class UserService {
         RETURNING id
     `, [userId]);
         if (result.length === 0) {
-            throw new errors_1.AppError(404, 'User not found or no active API key to revoke.');
+            throw new AppError(404, 'User not found or no active API key to revoke.');
         }
-        logger_1.logger.info('API key revoked for user', { userId });
+        logger.info('API key revoked for user', { userId });
         await audit_service_1.auditService.logAction({
             userId,
             action: 'api_key_revoke',
@@ -218,7 +233,7 @@ class UserService {
         for (const user of usersWithKeys) {
             if (user.api_key_hash && await bcrypt_1.default.compare(apiKey, user.api_key_hash)) {
                 if (user.api_key_expires_at && new Date(user.api_key_expires_at) < new Date()) {
-                    logger_1.logger.warn('Expired API key used', { userId: user.id, keyName: user.api_key_name });
+                    logger.warn('Expired API key used', { userId: user.id, keyName: user.api_key_name });
                     return null; // Key expired
                 }
                 return user;

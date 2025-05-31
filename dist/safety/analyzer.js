@@ -114,12 +114,17 @@ class SafetyAnalyzer {
     }
     calculateConfidence(type, matchCount) {
         const baseConfidence = {
-            [types_1.ViolationType.HARMFUL_CONTENT]: 0.95,
-            [types_1.ViolationType.ILLEGAL_CONTENT]: 0.90,
-            [types_1.ViolationType.PRIVACY]: 0.85,
-            [types_1.ViolationType.BIAS]: 0.75,
-            [types_1.ViolationType.MISINFORMATION]: 0.70,
-            [types_1.ViolationType.MANIPULATION]: 0.65
+            [types_1.ViolationType.HARMFUL_CONTENT]: 0.7,
+            [types_1.ViolationType.ILLEGAL_CONTENT]: 0.8,
+            [types_1.ViolationType.PRIVACY]: 0.6,
+            [types_1.ViolationType.BIAS]: 0.5,
+            [types_1.ViolationType.MISINFORMATION]: 0.6,
+            [types_1.ViolationType.MANIPULATION]: 0.7,
+            [types_1.ViolationType.PII_DETECTED]: 0.8,
+            [types_1.ViolationType.PROFANITY]: 0.9,
+            [types_1.ViolationType.SELF_HARM]: 0.8,
+            [types_1.ViolationType.HATE_SPEECH]: 0.8,
+            [types_1.ViolationType.POLICY_VIOLATION]: 0.7,
         };
         const base = baseConfidence[type] || 0.5;
         const boost = Math.min(0.1, matchCount * 0.02);

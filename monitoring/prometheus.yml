@@ -12,7 +12,7 @@ alerting:
           - alertmanager:9093
 
 scrape_configs:
-  # OpenAI Safe Application
+  # OpenVault AI Security Platform
   - job_name: 'openai-safe'
     static_configs:
       - targets: ['app:8080']

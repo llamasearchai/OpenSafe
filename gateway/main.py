@@ -7,8 +7,8 @@ import json
 from typing import Any, Dict
 
 app = FastAPI(
-    title="OpenAI Safe Gateway",
-    description="FastAPI Gateway for OpenAI Safe Platform",
+    title="OpenVault Gateway",
+    description="FastAPI Gateway for OpenVault AI Security Platform",
     version="1.0.0"
 )
 

@@ -28,6 +28,8 @@ help:
 	@echo "  ci              Run CI pipeline"
 	@echo "  release         Create a release"
 
+PROJECT_NAME=opensafe
+
 install:
 	@echo "Installing dependencies..."
 	npm ci
@@ -85,7 +87,7 @@ seed:
 
 docker-build:
 	@echo "Building Docker image..."
-	docker build -t openai-safe:latest .
+	docker build -t opensafe/core:latest .
 
 docker-run:
 	@echo "Starting Docker Compose..."
@@ -112,19 +114,19 @@ clean:
 
 db-reset:
 	@echo "Resetting database..."
-	docker-compose exec postgres dropdb -U postgres openaisafe || true
-	docker-compose exec postgres createdb -U postgres openaisafe
+	docker-compose exec postgres dropdb -U postgres opensafe || true
+	docker-compose exec postgres createdb -U postgres opensafe
 	make migrate
 	make seed
 
 db-backup:
 	@echo "Creating database backup..."
 	mkdir -p backups
-	docker-compose exec postgres pg_dump -U postgres openaisafe > backups/backup_$(shell date +%Y%m%d_%H%M%S).sql
+	docker-compose exec postgres pg_dump -U postgres opensafe > backups/backup_$(shell date +%Y%m%d_%H%M%S).sql
 
 db-restore:
 	@echo "Restoring database from $(BACKUP_FILE)..."
-	docker-compose exec -T postgres psql -U postgres openaisafe < $(BACKUP_FILE)
+	docker-compose exec -T postgres psql -U postgres opensafe < $(BACKUP_FILE)
 
 benchmark:
 	@echo "Running performance benchmarks..."
@@ -151,7 +153,7 @@ stop-monitoring:
 
 logs:
 	@echo "Showing application logs..."
-	docker-compose logs -f openai-safe
+	docker-compose logs -f opensafe-api
 
 logs-monitoring:
 	@echo "Showing monitoring logs..."

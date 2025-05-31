@@ -39,14 +39,14 @@ app.get('/metrics', (_req, res) => {
 });
 
 // Error handling middleware
-app.use((err: any, _req: any, res: any, _next: any) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
 
 // Start server
 server.listen(config.port, () => {
-  console.log(`OpenAI Safe API server running on port ${config.port}`);
+  console.log(`OpenVault AI Security Platform running on port ${config.port}`);
   console.log(`Environment: ${config.env}`);
 });
 
@@ -57,4 +57,6 @@ process.on('SIGTERM', () => {
     console.log('Server closed');
     process.exit(0);
   });
-}); 
+});
+
+export { app, server }; 

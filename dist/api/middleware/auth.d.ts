@@ -7,6 +7,6 @@ export interface AuthenticatedRequest extends Request {
         role: UserRole;
     };
 }
-export declare function authenticate(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void>;
-export declare function authorize(allowedRoles: UserRole[]): (req: AuthenticatedRequest, res: Response, next: NextFunction) => void;
+export declare function authenticate(req: AuthenticatedRequest, _res: Response, next: NextFunction): Promise<void>;
+export declare function authorize(allowedRoles: UserRole[]): (req: AuthenticatedRequest, _res: Response, next: NextFunction) => void;
 //# sourceMappingURL=auth.d.ts.map

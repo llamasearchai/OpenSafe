@@ -183,7 +183,7 @@ impl SafetyAnalyzer {
         let mut violations = Vec::new();
         
         for pattern in &self.privacy_patterns {
-            for mat in pattern.find_iter(text) {
+            for _mat in pattern.find_iter(text) {
                 violations.push(Violation {
                     r#type: "privacy".to_string(),
                     severity: "high".to_string(),

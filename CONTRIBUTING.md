@@ -1,12 +1,12 @@
-# Contributing to OpenAI Safe Platform
+# Contributing to OpenSafe
 
-Thank you for your interest in contributing to OpenAI Safe Platform! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to OpenSafe! This document provides guidelines and information for contributors.
 
-## 🤝 Code of Conduct
+## Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment. Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -41,7 +41,7 @@ We are committed to providing a welcoming and inclusive environment. Please read
    npm test
    ```
 
-## 📋 Development Workflow
+## Development Workflow
 
 ### Branch Strategy
 - `main` - Production-ready code
@@ -79,7 +79,7 @@ git commit -m "fix(api): resolve memory leak in stream processing"
 git commit -m "docs: update API documentation for safety endpoints"
 ```
 
-## 🔍 Pull Request Process
+## Pull Request Process
 
 1. **Create Feature Branch**
    ```bash
@@ -120,7 +120,7 @@ git commit -m "docs: update API documentation for safety endpoints"
 - [ ] No security vulnerabilities
 - [ ] Performance impact assessed
 
-## 🧪 Testing Guidelines
+## Testing Guidelines
 
 ### Test Structure
 ```
@@ -155,7 +155,7 @@ describe('SafetyAnalyzer', () => {
 });
 ```
 
-## 📝 Documentation Standards
+## Documentation Standards
 
 ### Code Documentation
 - Use TSDoc for TypeScript
@@ -185,7 +185,7 @@ async analyze(text: string, options?: AnalysisOptions): Promise<SafetyResult>
 - Document error conditions
 - Provide curl examples
 
-## 🔒 Security Guidelines
+## Security Guidelines
 
 ### Security Best Practices
 - Never commit secrets
@@ -199,7 +199,7 @@ Report security issues to: security@opensafe.ai
 
 **Do not** create public issues for security vulnerabilities.
 
-## 🎯 Areas for Contribution
+## Areas for Contribution
 
 ### High Priority
 - [ ] Performance optimizations
@@ -219,7 +219,7 @@ Report security issues to: security@opensafe.ai
 - [ ] Test additions
 - [ ] Example applications
 
-## 🏷️ Labels and Issues
+## Labels and Issues
 
 ### Issue Labels
 - `bug` - Something isn't working
@@ -237,7 +237,7 @@ Use the provided templates for:
 - Documentation improvements
 - Security reports
 
-## 🚀 Release Process
+## Release Process
 
 ### Version Strategy
 We use [Semantic Versioning](https://semver.org/):
@@ -255,7 +255,7 @@ We use [Semantic Versioning](https://semver.org/):
 - [ ] Documentation review
 - [ ] Release notes
 
-## 📊 Performance Guidelines
+## Performance Guidelines
 
 ### Benchmarks
 - Safety analysis: <50ms p95
@@ -275,7 +275,7 @@ npm run profile:memory
 npm run test:load
 ```
 
-## 🛠️ Development Tools
+## Development Tools
 
 ### Recommended Extensions (VS Code)
 - TypeScript Importer
@@ -309,10 +309,10 @@ npm run migrate
 npm run seed
 ```
 
-## 📞 Getting Help
+## Getting Help
 
 ### Communication Channels
-- **Discord**: [AI Safety Community](https://discord.gg/aisafety)
+- **Discord**: [AI Security Community](https://discord.gg/aisecurity)
 - **GitHub Discussions**: For technical questions
 - **Issues**: For bug reports and feature requests
 - **Email**: dev@opensafe.ai
@@ -320,7 +320,7 @@ npm run seed
 ### Mentorship
 New contributors can request mentorship from maintainers. We're here to help!
 
-## 🙏 Recognition
+## Recognition
 
 Contributors are recognized in:
 - CONTRIBUTORS.md file
@@ -328,7 +328,7 @@ Contributors are recognized in:
 - Monthly contributor highlights
 - Conference speaking opportunities
 
-## 📚 Resources
+## Resources
 
 ### Learning Materials
 - [AI Safety Fundamentals](https://aisafety.com)
@@ -341,8 +341,4 @@ Contributors are recognized in:
 - [Constitutional AI Paper](https://arxiv.org/abs/2212.08073)
 - [Anthropic Safety Research](https://www.anthropic.com/research)
 
----
-
-Thank you for contributing to making AI safer! 🛡️
-
-For questions about contributing, please reach out to the maintainers or join our Discord community. 
+Thank you for contributing to making AI more secure! 

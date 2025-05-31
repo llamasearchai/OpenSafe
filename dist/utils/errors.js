@@ -52,21 +52,16 @@ function errorHandler(err, req, res, _next) {
         });
         return;
     }
-    // Unhandled errors
-    logger_1.logger.error('Unhandled error', {
+    // Unexpected error
+    logger_1.logger.error('Unexpected error', {
         error: err.message,
         stack: err.stack,
         path: req.path,
-        method: req.method,
-        body: req.body
+        method: req.method
     });
-    // Don't leak error details in production
-    const message = process.env.NODE_ENV === 'production'
-        ? 'Internal server error'
-        : err.message;
     res.status(500).json({
-        error: message,
-        ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+        error: 'Internal server error',
+        code: 500
     });
 }
 exports.errorHandler = errorHandler;

@@ -1,14 +1,14 @@
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
-use serde::{Serialize, Deserialize};
+use serde::Serialize;
 use once_cell::sync::Lazy;
 use std::sync::Mutex;
 
 mod safety;
 mod interpretability;
 
-use safety::{SafetyAnalyzer, SafetyResult};
-use interpretability::{InterpretabilityAnalyzer, InterpretabilityResult};
+use safety::SafetyAnalyzer;
+use interpretability::InterpretabilityAnalyzer;
 
 static SAFETY_ANALYZER: Lazy<Mutex<SafetyAnalyzer>> = Lazy::new(|| {
     Mutex::new(SafetyAnalyzer::new())

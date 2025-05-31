@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuditLogFilterSchema = exports.SafetyPolicySchema = exports.PolicyRuleSchema = exports.ApiKeyRequestSchema = exports.UserUpdateSchema = exports.UserLoginSchema = exports.UserRegistrationSchema = exports.ExperimentUpdateSchema = exports.ResearchExperimentSchema = exports.ConstitutionalAIRequestSchema = exports.SafetyAnalysisRequestSchema = exports.ChatRequestSchema = exports.MessageSchema = exports.SafetyMode = exports.ViolationType = exports.UserRole = void 0;
 const zod_1 = require("zod");
-const types_1 = require("./types"); // Remove User import as it's not needed
+const types_1 = require("./types"); // Remove unused User import
 // Export the types for other modules to use
 var types_2 = require("./types");
 Object.defineProperty(exports, "UserRole", { enumerable: true, get: function () { return types_2.UserRole; } });
