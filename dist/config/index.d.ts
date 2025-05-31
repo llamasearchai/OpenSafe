@@ -29,17 +29,17 @@ declare const AgentConfigSchema: z.ZodObject<{
     instructions: string;
     tools: any[];
     downstreamAgents: string[];
-    publicDescription?: string | undefined;
     model?: string | undefined;
+    publicDescription?: string | undefined;
     temperature?: number | undefined;
     maxTokens?: number | undefined;
 }, {
     name: string;
     instructions: string;
+    model?: string | undefined;
     publicDescription?: string | undefined;
     tools?: any[] | undefined;
     downstreamAgents?: string[] | undefined;
-    model?: string | undefined;
     temperature?: number | undefined;
     maxTokens?: number | undefined;
 }>;
@@ -80,17 +80,17 @@ declare const ConfigSchema: z.ZodObject<{
         instructions: string;
         tools: any[];
         downstreamAgents: string[];
-        publicDescription?: string | undefined;
         model?: string | undefined;
+        publicDescription?: string | undefined;
         temperature?: number | undefined;
         maxTokens?: number | undefined;
     }, {
         name: string;
         instructions: string;
+        model?: string | undefined;
         publicDescription?: string | undefined;
         tools?: any[] | undefined;
         downstreamAgents?: string[] | undefined;
-        model?: string | undefined;
         temperature?: number | undefined;
         maxTokens?: number | undefined;
     }>>>;
@@ -281,9 +281,9 @@ declare const ConfigSchema: z.ZodObject<{
         zeroDataRetention?: boolean | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    model: string;
     port: number;
     env: "development" | "production" | "test";
+    model: string;
     provider: string;
     providers: Record<string, {
         name: string;
@@ -298,8 +298,8 @@ declare const ConfigSchema: z.ZodObject<{
         instructions: string;
         tools: any[];
         downstreamAgents: string[];
-        publicDescription?: string | undefined;
         model?: string | undefined;
+        publicDescription?: string | undefined;
         temperature?: number | undefined;
         maxTokens?: number | undefined;
     }>;
@@ -388,9 +388,9 @@ declare const ConfigSchema: z.ZodObject<{
         rateLimitEnabled?: boolean | undefined;
         helmetEnabled?: boolean | undefined;
     };
-    model?: string | undefined;
     port?: number | undefined;
     env?: "development" | "production" | "test" | undefined;
+    model?: string | undefined;
     provider?: string | undefined;
     providers?: Record<string, {
         name: string;
@@ -403,10 +403,10 @@ declare const ConfigSchema: z.ZodObject<{
     agents?: Record<string, {
         name: string;
         instructions: string;
+        model?: string | undefined;
         publicDescription?: string | undefined;
         tools?: any[] | undefined;
         downstreamAgents?: string[] | undefined;
-        model?: string | undefined;
         temperature?: number | undefined;
         maxTokens?: number | undefined;
     }> | undefined;
@@ -464,9 +464,9 @@ declare const ConfigSchema: z.ZodObject<{
     } | undefined;
 }>;
 export declare const config: {
-    model: string;
     port: number;
     env: "development" | "production" | "test";
+    model: string;
     provider: string;
     providers: Record<string, {
         name: string;
@@ -481,8 +481,8 @@ export declare const config: {
         instructions: string;
         tools: any[];
         downstreamAgents: string[];
-        publicDescription?: string | undefined;
         model?: string | undefined;
+        publicDescription?: string | undefined;
         temperature?: number | undefined;
         maxTokens?: number | undefined;
     }>;

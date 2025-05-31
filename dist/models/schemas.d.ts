@@ -168,10 +168,10 @@ export declare const ChatRequestSchema: z.ZodObject<{
     }[];
     stream: boolean;
     safety_mode: SafetyMode;
+    tools?: any[] | undefined;
     temperature?: number | undefined;
     max_tokens?: number | undefined;
     user_id?: string | undefined;
-    tools?: any[] | undefined;
     tool_choice?: "none" | "auto" | {
         function: {
             name: string;
@@ -195,12 +195,12 @@ export declare const ChatRequestSchema: z.ZodObject<{
         tool_call_id?: string | undefined;
     }[];
     model?: string | undefined;
+    tools?: any[] | undefined;
     temperature?: number | undefined;
     max_tokens?: number | undefined;
     stream?: boolean | undefined;
     safety_mode?: SafetyMode | undefined;
     user_id?: string | undefined;
-    tools?: any[] | undefined;
     tool_choice?: "none" | "auto" | {
         function: {
             name: string;
@@ -300,11 +300,11 @@ export declare const ExperimentUpdateSchema: z.ZodObject<{
     results: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
     logs: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    status?: "pending" | "completed" | "running" | "queued" | "failed" | "cancelled" | undefined;
+    status?: "pending" | "completed" | "running" | "queued" | "cancelled" | "failed" | undefined;
     results?: Record<string, any> | undefined;
     logs?: string[] | undefined;
 }, {
-    status?: "pending" | "completed" | "running" | "queued" | "failed" | "cancelled" | undefined;
+    status?: "pending" | "completed" | "running" | "queued" | "cancelled" | "failed" | undefined;
     results?: Record<string, any> | undefined;
     logs?: string[] | undefined;
 }>;

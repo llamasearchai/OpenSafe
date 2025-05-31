@@ -1,0 +1,36 @@
+# Language classification for GitHub
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+*.rs linguist-language=Rust
+*.js linguist-language=JavaScript
+*.json linguist-language=JSON
+
+# Exclude generated files and build artifacts from language statistics
+dist/* linguist-generated=true
+coverage/* linguist-generated=true
+node_modules/* linguist-vendored=true
+*.lock linguist-generated=true
+package-lock.json linguist-generated=true
+
+# Exclude documentation files from language detection
+*.md linguist-documentation=true
+docs/* linguist-documentation=true
+
+# Reduce weight of configuration files
+Makefile linguist-language=Makefile linguist-detectable=false
+*.yml linguist-language=YAML linguist-detectable=false
+*.yaml linguist-language=YAML linguist-detectable=false
+docker-compose*.yml linguist-detectable=false
+*.json linguist-detectable=false
+
+# Mark HTML files as templates if they're not core application files
+*.html linguist-language=HTML linguist-detectable=false
+
+# Ensure TypeScript and Rust are prominently detected
+src/**/*.ts linguist-language=TypeScript
+tests/**/*.ts linguist-language=TypeScript
+native/**/*.rs linguist-language=Rust
+
+# Mark shell scripts appropriately
+*.sh linguist-language=Shell
+scripts/* linguist-language=Shell 

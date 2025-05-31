@@ -1,6 +1,11 @@
 # OpenSafe
 
-A robust, production-ready AI and API safety/security platform built with TypeScript and Rust.
+A robust, production-ready AI and API safety/security platform built with **TypeScript** and **Rust**.
+
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ## Features
 

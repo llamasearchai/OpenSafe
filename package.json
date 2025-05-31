@@ -51,21 +51,23 @@
     "cli": "node dist/cli/index.js"
   },
   "keywords": [
+    "typescript",
+    "rust",
     "ai-security",
-    "ai-validation",
+    "ai-safety",
     "constitutional-ai",
     "openai",
     "content-moderation",
     "security-analysis",
-    "typescript",
-    "rust",
     "production-ready",
     "enterprise",
     "monitoring",
     "research",
     "bias-detection",
     "harmful-content",
-    "privacy-protection"
+    "privacy-protection",
+    "native-performance",
+    "type-safety"
   ],
   "author": {
     "name": "OpenSafe Team",
@@ -75,13 +77,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/opensafe/core.git"
+    "url": "https://github.com/llamasearchai/OpenSafe.git"
   },
   "bugs": {
-    "url": "https://github.com/opensafe/core/issues",
+    "url": "https://github.com/llamasearchai/OpenSafe/issues",
     "email": "bugs@opensafe.ai"
   },
-  "homepage": "https://github.com/opensafe/core#readme",
+  "homepage": "https://github.com/llamasearchai/OpenSafe#readme",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
