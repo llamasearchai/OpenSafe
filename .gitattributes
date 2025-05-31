@@ -1,36 +1,58 @@
-# Language classification for GitHub
-*.ts linguist-language=TypeScript
-*.tsx linguist-language=TypeScript
-*.rs linguist-language=Rust
-*.js linguist-language=JavaScript
-*.json linguist-language=JSON
+# AGGRESSIVE Language classification for GitHub - FORCE TypeScript/Rust detection
+*.ts linguist-language=TypeScript linguist-detectable=true
+*.tsx linguist-language=TypeScript linguist-detectable=true
+*.rs linguist-language=Rust linguist-detectable=true
 
-# Exclude generated files and build artifacts from language statistics
-dist/* linguist-generated=true
-coverage/* linguist-generated=true
-node_modules/* linguist-vendored=true
-*.lock linguist-generated=true
-package-lock.json linguist-generated=true
+# FORCE primary languages to be detected
+src/**/*.ts linguist-language=TypeScript linguist-detectable=true
+tests/**/*.ts linguist-language=TypeScript linguist-detectable=true
+native/**/*.rs linguist-language=Rust linguist-detectable=true
+native/src/*.rs linguist-language=Rust linguist-detectable=true
 
-# Exclude documentation files from language detection
+# COMPLETELY EXCLUDE all non-primary language files
+Makefile linguist-detectable=false linguist-generated=true
+package.json linguist-detectable=false linguist-generated=true
+package-lock.json linguist-detectable=false linguist-generated=true
+tsconfig.json linguist-detectable=false linguist-generated=true
+*.json linguist-detectable=false linguist-generated=true
+*.js linguist-detectable=false linguist-generated=true
+*.html linguist-detectable=false linguist-generated=true
+*.css linguist-detectable=false linguist-generated=true
+*.yml linguist-detectable=false linguist-generated=true
+*.yaml linguist-detectable=false linguist-generated=true
+*.toml linguist-detectable=false linguist-generated=true
+*.lock linguist-detectable=false linguist-generated=true
+Cargo.toml linguist-detectable=false linguist-generated=true
+Cargo.lock linguist-detectable=false linguist-generated=true
+
+# Exclude ALL configuration and documentation
 *.md linguist-documentation=true
-docs/* linguist-documentation=true
-
-# Reduce weight of configuration files
-Makefile linguist-language=Makefile linguist-detectable=false
-*.yml linguist-language=YAML linguist-detectable=false
-*.yaml linguist-language=YAML linguist-detectable=false
+*.txt linguist-documentation=true
+*.md linguist-detectable=false
+LICENSE linguist-detectable=false
+README.md linguist-detectable=false
+CHANGELOG.md linguist-detectable=false
+CONTRIBUTING.md linguist-detectable=false
+Dockerfile linguist-detectable=false
 docker-compose*.yml linguist-detectable=false
-*.json linguist-detectable=false
+.eslintrc.json linguist-detectable=false
+.gitignore linguist-detectable=false
+.env* linguist-detectable=false
 
-# Mark HTML files as templates if they're not core application files
-*.html linguist-language=HTML linguist-detectable=false
+# Exclude ALL build artifacts and generated files
+dist/* linguist-generated=true linguist-vendored=true
+coverage/* linguist-generated=true linguist-vendored=true
+node_modules/* linguist-vendored=true
+target/* linguist-generated=true linguist-vendored=true
+native/target/* linguist-generated=true linguist-vendored=true
+scripts/* linguist-detectable=false
+.github/* linguist-detectable=false
 
-# Ensure TypeScript and Rust are prominently detected
-src/**/*.ts linguist-language=TypeScript
-tests/**/*.ts linguist-language=TypeScript
-native/**/*.rs linguist-language=Rust
+# Exclude shell scripts from detection
+*.sh linguist-detectable=false
 
-# Mark shell scripts appropriately
-*.sh linguist-language=Shell
-scripts/* linguist-language=Shell 
+# ONLY ALLOW TypeScript and Rust files to be detected
+* linguist-detectable=false
+*.ts linguist-detectable=true
+*.tsx linguist-detectable=true  
+*.rs linguist-detectable=true 
