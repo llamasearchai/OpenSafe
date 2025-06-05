@@ -191,7 +191,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 For enterprise inquiries and support:
 - **Repository**: https://github.com/llamasearchai/OpenSafe (Private)
-- **Email**: enterprise@opensafe.ai
+- **Email**: nikjois@llamasearch.ai
 - **Documentation**: Internal enterprise documentation available
 
 ## Technical Specifications
